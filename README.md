@@ -14,22 +14,25 @@ The three cooperate if all are installed: `close-out` and `whats-next` call `ren
 
 ## Install
 
-Personal (all repos on this machine):
+As a plugin (recommended; works on any machine, updates itself):
+
+```
+/plugin marketplace add MatthewDelprado/claude-skills
+/plugin install dp@dp-skills
+```
+
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`. Updates arrive at startup when auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills).
+
+The plugin has no `version` on purpose, so every push to `main` counts as an update.
+
+Editing: work in a normal clone of this repo, push, and the change reaches each machine at its next startup.
+
+If a machine's admin settings block third-party marketplaces, fall back to symlinks:
 
 ```bash
 gh repo clone MatthewDelprado/claude-skills ~/.claude/claude-skills
 for s in rename-session close-out whats-next; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
 ```
-
-Single repo (checked in with the project):
-
-```bash
-mkdir -p .claude/skills && cp -R ~/.claude/claude-skills/skills/close-out .claude/skills/
-```
-
-Update later with `git -C ~/.claude/claude-skills pull`.
-
-If a skill of the same name already exists in `~/.claude/skills`, remove or rename that one first.
 
 ## Requirements
 

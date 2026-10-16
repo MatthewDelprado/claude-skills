@@ -137,6 +137,7 @@ Omit any section that has nothing in it.
 ## Closing message
 - Report format: default | <template>
 - Banner: default | <custom text>
+- (Legacy: a config with bare free-form text under this heading, from before these two keys, has that text treated as the banner.)
 ```
 
 ---
@@ -355,7 +356,7 @@ Steps 2–6 usually edit things after Step 1's commit: doc fixes, config changes
 2. Commit exactly the paths steps 2–6 and the run log touched, using the Step 1 pathspec rule. Push per policy.
 3. `git status` should show none of *your* paths. Other sessions' changes aren't yours; leave them.
 
-For a parked session, first give the return date, the wake-up trigger and the `/compact` line, then use this closing banner instead of the standard one below:
+For a parked session, first give the return date, the wake-up trigger and the `/compact` line. The closing report below still applies; end with this banner **instead of** the standard one:
 
 ```
 ---------------------------------
@@ -365,7 +366,7 @@ Session parked until <when>
 
 **Closing report.** Default: a short scannable summary — what was committed (with hashes), issues opened or closed, anything needing the user's call, and what was deliberately left uncommitted. Real hashes and issue numbers, so it doubles as a receipt. If the config's `## Closing message` gives a report format, use that instead. If a write was denied or failed, say what landed and what didn't; never report success you didn't confirm.
 
-Then output exactly this as the final message (or the banner the config's `## Closing message` sets):
+Unless the session is parked (banner above), end with exactly this as the final message (or the banner the config's `## Closing message` sets):
 
 ```
 ---------------------------------

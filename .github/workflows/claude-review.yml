@@ -1,0 +1,61 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# One in-flight review per PR; a new push cancels the previous run.
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Draft PRs are skipped until marked ready.
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          # Runs on the repo owner's Claude subscription, not API billing.
+          # Secret is generated locally with `claude setup-token` (Pro/Max only).
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            You are reviewing pull request #${{ github.event.pull_request.number }}
+            in ${{ github.repository }}, a Claude Code plugin that ships personal
+            skills (skills/<name>/SKILL.md). The plugin has no version number, so
+            every merge to main updates every machine that has it installed.
+
+            Read the change with:
+              gh pr diff ${{ github.event.pull_request.number }}
+              gh pr view ${{ github.event.pull_request.number }}
+
+            Check, in priority order:
+              1. Skill correctness: valid frontmatter (name matches the folder,
+                 description present), instructions are unambiguous, and the
+                 description has clear trigger phrases so the skill fires when
+                 intended and not on unrelated messages.
+              2. Genericity: no personal, employer or repo-specific names, paths,
+                 tools or secrets. Skills must work in any repo.
+              3. Collisions: trigger phrases that overlap another skill in skills/.
+              4. Docs and manifests: README skills table, install snippet and
+                 .claude-plugin descriptions list every skill in skills/.
+              5. Blast radius: anything in the diff that would behave badly when
+                 pushed to all machines at once.
+            Be concise and specific, citing file:line. Skip style nits.
+
+            Then post your review as ONE top-level PR comment. Compose the body
+            with the Write tool to a file, then run exactly:
+              gh pr comment ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --body-file <that file>
+            Post a comment even when the change is clean — a single line saying so.
+            This comment is the only output that matters; do not skip it.
+          # gh is pre-authenticated via the action's GitHub App token (GH_TOKEN).
+          claude_args: '--allowed-tools "Write,Read,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh api:*)"'

@@ -13,7 +13,7 @@ Work through each step in order. Surface issues one at a time — don't dump a l
 
 **Defaults, then overrides.** Every step below states a universal default. The repo's config can change any of them: a section in the config replaces the matching default, and anything the config doesn't mention keeps it. So a repo never has to restate the flow, only where it differs. If the config and this file conflict, the config wins for that repo. Nothing in this file is specific to one repo; if a step needs repo knowledge, it reads it from the config.
 
-**Portability.** Ships as the `dp` plugin (or a symlink to its source repo), so it runs in any repo on any machine.
+**Portability.** Ships as a plugin (or a symlink to its source repo), so it runs in any repo on any machine.
 
 ---
 
@@ -319,7 +319,7 @@ gh issue view <n> --repo <owner>/<repo> --json comments --jq '(.comments[-1].cre
 git log --grep="#<n>" --format="%ct" -1
 ```
 
-Both print a Unix epoch, so compare the two numbers directly: if the commit's is larger than the comment's, flag the issue for review. (Don't compare `%cI` against `gh`'s timestamps as strings: git's carries a local offset like `+10:00` while `gh` gives UTC `Z`.) An issue with no comments counts as epoch 0.
+Both print a Unix epoch, so compare the two numbers directly: if the commit's is larger than the comment's, flag the issue for review. (Don't compare `%cI` against `gh`'s timestamps as strings: git's carries a local offset like `+10:00` while `gh` gives UTC `Z`.) An issue with no comments counts as epoch 0, and if `git log` prints nothing there is no commit to compare, so don't flag the issue.
 
 **This flags candidates; it doesn't prove staleness.** `--grep` matches any commit *message* containing the number, including a later close-out commit that only namechecks it. For each flag, read the last comment and ask: *does anything that happened after it change what a reader needs to know?* If yes, post a wrap-up comment synthesizing what happened since. If no, leave it — a comment that adds nothing is its own noise. (It's also a known false-positive on sessions whose whole deliverable was issue comments; judge by hand.)
 
@@ -366,7 +366,7 @@ Session parked until <when>
 
 **Closing report.** Default: a short scannable summary — what was committed (with hashes), issues opened or closed, anything needing the user's call, and what was deliberately left uncommitted. Real hashes and issue numbers, so it doubles as a receipt. If the config's `## Closing message` gives a report format, use that instead. If a write was denied or failed, say what landed and what didn't; never report success you didn't confirm.
 
-Unless the session is parked (banner above), end with exactly this as the final message (or the banner the config's `## Closing message` sets):
+Unless the session is parked (banner above), end with exactly this as the final message (or the banner the config's `## Closing message` sets). The parked banner always wins when parked; a custom `Banner:` replaces only this standard one:
 
 ```
 ---------------------------------

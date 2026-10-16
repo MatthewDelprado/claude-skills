@@ -100,7 +100,7 @@ Omit any section that has nothing in it.
 
 ## Git
 - Branch and push policy
-- Hand-edited paths: `<globs>` — policy: commit separately | leave | ask
+- Hand-edited paths: `<globs>` — policy: commit separately | leave | ask   (opt-in; without this line, pre-existing changes are left and named in the report)
 - High-blast-radius paths: `<globs>` — policy: ask | commit | leave
 - Shared-tree notes (concurrent sessions, files other agents own)
 - Repo-specific hygiene commands
@@ -228,9 +228,9 @@ git diff --stat
 - Untracked files you own: meaningful (scripts, config, docs) → commit. Noise (temp files, runtime state, backups) → `.gitignore` or delete.
 - **Changes this session didn't make.** Classify each, then apply the default unless the config's `## Git` sets a different policy for that path:
   - **Another session's or a scheduled job's work** (a different topic, files a running job writes, an untracked directory you didn't create) → leave it uncommitted and name it in the report. Never bundle it into this session's commits.
-  - **The user's own hand edits** (content they edit directly, e.g. docs or notes changed in an editor outside the session) → commit them in a **separate** commit labelled as swept-in edits, and list them in the report as an FYI. Leaving them risks losing them, and a clean tree is the goal.
+  - **The user's own hand edits** — opt-in, only for paths the config lists under `Hand-edited paths:` with `policy: commit separately`. Commit those in a **separate** commit labelled as swept-in edits, and list them in the report as an FYI. Without that config line, nothing tells you a pre-existing dirty file is a hand edit and not another session's work, a job's output or unfinished WIP, so don't sweep it in: it falls under the default below.
   - **High-blast-radius files** (schema, CI config, agent instructions such as `CLAUDE.md`, shared settings) that the session never discussed → show the diff and ask before committing. A stray edit there must never ride along silently.
-  - **Can't tell which** → ask. Wrongly sweeping in another session's half-done work is worse than one extra question.
+  - **Anything else the session didn't make, and no config path class covers** (the default) → leave it uncommitted and name it in the report. Ask only if it is a high-blast-radius file. Wrongly sweeping in someone's half-done work and pushing it is worse than leaving a file dirty.
 - Run whatever the config's `## Git` section adds.
 - Push per the config's push policy (default: push the current branch if it has an upstream; never force-push). Expect to need a pull/rebase — the remote may have moved mid-run. Another writer, scheduled or interactive, may also have pushed this session's commits already (`git log --oneline HEAD@{1}..HEAD`, or check `git status -sb`); if so, say that rather than reporting a push you didn't make. Work deliberately held unpushed pending a decision belongs on a branch, not the default branch. If the session ran on a temporary worktree branch, say so in the report: work left only there is easy to strand. The config's push policy decides whether to land it on the default branch.
 
@@ -314,11 +314,11 @@ Any with an empty list → apply the repo's labels before finishing.
 **Comment-currency gate — every issue this session commented on, closed, or referenced in a commit.** A long session posts an update partway through and keeps working; more commits land, other issues close, and the thread never gets a final pass. Before finishing, check whether each issue's last comment is actually the last word. For each issue, run these two on their own:
 
 ```bash
-gh issue view <n> --repo <owner>/<repo> --json comments --jq '.comments[-1].createdAt'
-git log --grep="#<n>" --format="%cI" -1
+gh issue view <n> --repo <owner>/<repo> --json comments --jq '(.comments[-1].createdAt // "1970-01-01T00:00:00Z") | fromdate'
+git log --grep="#<n>" --format="%ct" -1
 ```
 
-If the latest commit mentioning the issue is newer than its last comment, flag it for review. Compare the moments, not the strings: git's `%cI` carries a local offset (`+10:00`) while `gh` gives UTC `Z`, so convert both to UTC in your head before comparing.
+Both print a Unix epoch, so compare the two numbers directly: if the commit's is larger than the comment's, flag the issue for review. (Don't compare `%cI` against `gh`'s timestamps as strings: git's carries a local offset like `+10:00` while `gh` gives UTC `Z`.) An issue with no comments counts as epoch 0.
 
 **This flags candidates; it doesn't prove staleness.** `--grep` matches any commit *message* containing the number, including a later close-out commit that only namechecks it. For each flag, read the last comment and ask: *does anything that happened after it change what a reader needs to know?* If yes, post a wrap-up comment synthesizing what happened since. If no, leave it — a comment that adds nothing is its own noise. (It's also a known false-positive on sessions whose whole deliverable was issue comments; judge by hand.)
 

@@ -1,6 +1,6 @@
 ---
 name: bro
-description: Make complicated messages easier to understand. Restates the last message in plain language with no jargon, tables up any options with a recommendation, and opens with a one-line summary when the conversation is deep in detail. Trigger on "bro", "wtf", "wtf?", "what?", "huh", "I don't follow", "explain that simply", "say that in plain English", "make that easier to understand", "too complicated", or any short confused reaction to the last message.
+description: Make complicated messages easier to understand. Restates the last message in plain language with no jargon, tables up any options with a recommendation, and opens with a very brief summary when the conversation is deep in detail. Trigger on "bro", "wtf", "wtf?", "I don't follow", "what does that mean", "explain that simply", "say that in plain English", "make that easier to understand", "that's too complicated".
 ---
 
 # Bro

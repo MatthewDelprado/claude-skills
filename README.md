@@ -9,8 +9,9 @@ Personal Claude Code skills that work in any repo. No repo-specific paths or too
 | [`rename-session`](skills/rename-session/SKILL.md) | Retitles the current session to `<overall work> - <#issue> - <mode> - <specifics>`, with prefixes for *needs you*, *parked until <time>*, *closing out* and *done*. Trigger: `/rename-session`. |
 | [`close-out`](skills/close-out/SKILL.md) | End-of-session cleanup: session summary, commit only this session's work, stale-reference audit, docs and verification check, issue tidy-up, self-improvement proposals. Repo-specific steps come from `.claude/close-out.md`; the first run in a repo interviews you to create it. Trigger: "close out", "wrap up". |
 | [`whats-next`](skills/whats-next/SKILL.md) | Walks you through the remaining work one decision per turn, each with a recommended default, until the session is blocked or done, then hands off to `close-out`. Trigger: "what's next", "what's left". |
+| [`bro`](skills/bro/SKILL.md) | Makes the last message easier to understand: restates it in plain language with no jargon, tables any options with factors and a recommendation, and opens with a one-line summary when the conversation is deep in detail. Trigger: "bro", "wtf". |
 
-The three cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone.
+`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone, and `bro` stands alone.
 
 ## Install
 
@@ -21,7 +22,7 @@ As a plugin (recommended; works on any machine, updates itself):
 /plugin install dp@dp-skills
 ```
 
-Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`. Updates arrive at startup when auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills).
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`. Updates arrive at startup when auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills).
 
 The plugin has no `version` on purpose, so every push to `main` counts as an update.
 
@@ -31,7 +32,7 @@ If a machine's admin settings block third-party marketplaces, fall back to symli
 
 ```bash
 gh repo clone MatthewDelprado/claude-skills ~/.claude/claude-skills
-for s in rename-session close-out whats-next; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
+for s in rename-session close-out whats-next bro; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
 ```
 
 ## Requirements

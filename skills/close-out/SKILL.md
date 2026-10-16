@@ -1,6 +1,6 @@
 ---
 name: close-out
-description: End-of-session cleanup that works in any repo. Writes a session summary, commits and pushes only this session's work, audits for stale references, checks docs and verification coverage, tidies GitHub issues, and proposes improvements to itself. Repo-specific steps come from `.claude/close-out.md`; the first run in a repo interviews you to create it. Trigger when the user says "close out", "wrap up", "let's close this off", "clean up after this", or "close-out setup".
+description: End-of-session cleanup that works in any repo. Writes a session summary, commits and pushes this session's work without sweeping in other sessions', audits for stale references, checks docs and verification coverage, tidies GitHub issues, and proposes improvements to itself. Every step has a universal default; a repo's `.claude/close-out.md` overrides only what differs there, and the first run in a repo interviews you to create it. Trigger when the user says "close out", "wrap up", "let's close this off", "clean up after this", or "close-out setup".
 ---
 
 # close-out
@@ -11,7 +11,17 @@ The flow is the same everywhere. What differs per repo — where summaries go, w
 
 Work through each step in order. Surface issues one at a time — don't dump a list.
 
-**Portability.** Installed globally (`~/.claude/skills/close-out`), so it runs in any repo. Nothing in this file is specific to one repo; if a step needs repo knowledge, it reads it from the config.
+**Defaults, then overrides.** Every step below states a universal default. The repo's config can change any of them: a section in the config replaces the matching default, and anything the config doesn't mention keeps it. So a repo never has to restate the flow, only where it differs. If the config and this file conflict, the config wins for that repo. Nothing in this file is specific to one repo; if a step needs repo knowledge, it reads it from the config.
+
+**Portability.** Ships as a plugin (or a symlink to its source repo), so it runs in any repo on any machine.
+
+---
+
+## Command shape
+
+Run shell commands one at a time, each a single static command: no `$(...)` or backtick substitution, no `cd <dir> && …` chained with a pipe or redirect, and no values computed inline. Those shapes can never get a durable allow rule in Claude Code, so they stall unattended runs on a permission prompt. Read each result, do any arithmetic or comparison yourself, then write the next command with the values filled in as literals. Prefer the dedicated tools (Read, Grep, Glob) over `cat`, `grep` or `ls` where they do the job.
+
+For `gh`, always pass `--repo <owner>/<repo>` as a literal. Take it from the config's `## Issues` section; failing that, run `gh repo view --json nameWithOwner` once, on its own, and reuse the answer. The snippets below are shapes to follow, with `<placeholders>` you fill in.
 
 **Session title.** If the `rename-session` skill is installed, call it as the very first act (`rename-session STATE=closing`, before the summary) and as the last act, once everything has landed (`STATE=done`, `STATE=parked WHEN=<time>` or `STATE=waiting NEED=<what>`). Skip silently if it isn't there.
 
@@ -36,10 +46,7 @@ Work through each step in order. Surface issues one at a time — don't dump a l
 
 ## Find the config
 
-```bash
-root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
-for c in ./.claude/close-out.md "$root/.claude/close-out.md"; do [ -f "$c" ] && { echo "$c"; break; }; done
-```
+Look for `.claude/close-out.md` in the current directory first, then at the repo root (`git rev-parse --show-toplevel`, run on its own). Use Read or Glob, not a shell loop.
 
 - **Found** → read it. Every section is optional; an omitted section means the default in the step below.
 - **Redirect.** If the file's whole content is a line `redirect: <path>` (relative to that file), follow it and treat the target's repo as the root for everything below. This lets an umbrella directory that isn't itself a repo point at the repo where work actually happens.
@@ -66,15 +73,16 @@ One question per turn, each with a recommended default, answerable in a word. No
 
 **3. Ask.** Start by offering the shortcut: "Found N candidate steps — walk through them, or start minimal?" Then, in this order and skipping anything with no evidence (except the two policy choices, which always get asked):
 
-1. Session summary — where it goes, or none *(policy)*
+1. Session record — a summary file (default), a line in an existing log, both, or none. If the survey found a log the repo already keeps, recommend that *(policy)*
 2. Push policy — direct to the default branch, PR, or don't push *(policy)*
-3. Docs that must stay current
-4. Duplicated or generated files to reconcile
-5. Gates — commands to run, and whether a failure stops the close-out, asks, or just warns
-6. Issue tracker — repo, labeling convention, claim label
-7. "Anything you always do at the end of a session here that I haven't listed?"
+3. Changes this session didn't make — only if the survey shows hand-edited content, or files with a big blast radius (schema, CI, agent instructions), worth naming as path classes
+4. Docs that must stay current
+5. Duplicated or generated files to reconcile
+6. Gates — commands to run, and whether a failure stops the close-out, asks, or just warns
+7. Issue tracker — repo, labeling convention, claim label
+8. "Anything you always do at the end of a session here that I haven't listed?"
 
-Aim for 8 questions or fewer.
+Aim for 8 questions or fewer. Record only what differs from the defaults in this file; a config that restates a default is noise that drifts.
 
 **4. Write `.claude/close-out.md`** from the template below, show it in full, and continue into the run. It gets committed with the rest of the session's work.
 
@@ -87,10 +95,13 @@ Omit any section that has nothing in it.
 
 ## Session summary
 - Path: `<dir>/YYYY-MM-DD-<slug>.md`        (or: none)
+- Log: `<file>`, one line per change, format `<line format>`   (optional; with Path: none, the log is the only record)
 - Anything the default template must keep or add
 
 ## Git
 - Branch and push policy
+- Hand-edited paths: `<globs>` — policy: commit separately | leave | ask   (opt-in; without this line, pre-existing changes are left and named in the report)
+- High-blast-radius paths: `<globs>` — policy: ask | commit | leave
 - Shared-tree notes (concurrent sessions, files other agents own)
 - Repo-specific hygiene commands
 
@@ -124,7 +135,9 @@ Omit any section that has nothing in it.
 - Steps to omit, with the reason
 
 ## Closing message
-Default | custom text
+- Report format: default | <template>
+- Banner: default | <custom text>
+- (Legacy: a config with bare free-form text under this heading, from before these two keys, has that text treated as the banner.)
 ```
 
 ---
@@ -157,7 +170,15 @@ Common case: the work is done for now, but there's a check at a known time (a so
 
 ## Step 0 — Write session summary
 
-Before anything else, write a session summary to the configured path (default `sessions/YYYY-MM-DD-<slug>.md`; `none` in the config means skip). Slug: 2–4 words describing the work (e.g. `zero-token-polling-architecture`).
+**Default:** before anything else, write a session summary file to `sessions/YYYY-MM-DD-<slug>.md`. Slug: 2–4 words describing the work (e.g. `zero-token-polling-architecture`).
+
+**Overrides** (config `## Session summary`):
+- `Path:` — a different location, or `none` to skip the file.
+- `Log:` — the repo keeps a running log instead of (or as well as) summary files. Append one headline line per meaningful change in the log's own format, after Step 1 so the lines can cite the real commit hash. An accurate hash beats a single commit: commit the work, read the hash, append, then commit the log in a small follow-up. The log holds the headline; git holds the detail.
+
+Use today's date from a fresh `date` call, not from memory: a long session can cross midnight.
+
+The rest of this step describes the summary file.
 
 This is the primary way a future agent understands why decisions were made — not git log, not commit messages. Write it for someone starting cold with no memory of this conversation.
 
@@ -206,8 +227,13 @@ git diff --stat
 - Treat an untracked directory as someone else's unless you created it. Read `git diff --stat`, don't just run it: for a scripted multi-file edit, a few intended lines that report hundreds of deletions is a bad edit, not a big one (`git checkout -- <path>` is free before staging, expensive after pushing). Prefer exact string replacement with a per-site assertion over a regex, and never a `DOTALL`/multi-line pattern across a code fence. Re-run `git status` immediately before committing — the tree may have changed since you first looked.
 - Group logically: one commit per coherent change, not one per file.
 - Untracked files you own: meaningful (scripts, config, docs) → commit. Noise (temp files, runtime state, backups) → `.gitignore` or delete.
+- **Changes this session didn't make.** Classify each, then apply the default unless the config's `## Git` sets a different policy for that path:
+  - **Another session's or a scheduled job's work** (a different topic, files a running job writes, an untracked directory you didn't create) → leave it uncommitted and name it in the report. Never bundle it into this session's commits.
+  - **The user's own hand edits** — opt-in, only for paths the config lists under `Hand-edited paths:` with `policy: commit separately`. Commit those in a **separate** commit labelled as swept-in edits, and list them in the report as an FYI. Without that config line, nothing tells you a pre-existing dirty file is a hand edit and not another session's work, a job's output or unfinished WIP, so don't sweep it in: it falls under the default below.
+  - **High-blast-radius files** (schema, CI config, agent instructions such as `CLAUDE.md`, shared settings) that the session never discussed → show the diff and ask before committing. A stray edit there must never ride along silently.
+  - **Anything else the session didn't make, and no config path class covers** (the default) → leave it uncommitted and name it in the report. Ask only if it is a high-blast-radius file. Wrongly sweeping in someone's half-done work and pushing it is worse than leaving a file dirty.
 - Run whatever the config's `## Git` section adds.
-- Push per the config's push policy (default: push the current branch if it has an upstream; never force-push). Expect to need a pull/rebase — the remote may have moved mid-run. Another writer, scheduled or interactive, may also have pushed this session's commits already (`git log --oneline HEAD@{1}..HEAD`, or check `git status -sb`); if so, say that rather than reporting a push you didn't make. Work deliberately held unpushed pending a decision belongs on a branch, not the default branch.
+- Push per the config's push policy (default: push the current branch if it has an upstream; never force-push). Expect to need a pull/rebase — the remote may have moved mid-run. Another writer, scheduled or interactive, may also have pushed this session's commits already (`git log --oneline HEAD@{1}..HEAD`, or check `git status -sb`); if so, say that rather than reporting a push you didn't make. Work deliberately held unpushed pending a decision belongs on a branch, not the default branch. If the session ran on a temporary worktree branch, say so in the report: work left only there is easy to strand. The config's push policy decides whether to land it on the default branch.
 
 Report: what was committed, what was ignored, and **what was deliberately left uncommitted and why**.
 
@@ -217,11 +243,7 @@ Report: what was committed, what was ignored, and **what was deliberately left u
 
 From context — git log, recent file changes, the conversation — identify what this work **retired, renamed, replaced, or reconfigured** (a changed value can leave live docs wrong just like a changed name). Propose the list to the user before grepping: "Based on what we built, I think these were retired or changed: [list]. Anything to add or remove?"
 
-Then grep the repo for those terms:
-
-```bash
-grep -rn "<retired name>" --include="*.md" --include="*.json" --include="*.sh" . 2>/dev/null
-```
+Then search the repo for those terms (the Grep tool, or one plain `grep -rn "<retired name>" .` per term).
 
 Two more passes, because a rename grep misses them:
 
@@ -272,7 +294,7 @@ With no gates in the config, this step is the coverage question only.
 
 ## Step 5 — Issues
 
-Skip if the config names no tracker and `gh` isn't usable here. Get the repo from the config, or `gh repo view --json nameWithOwner -q .nameWithOwner`.
+Skip if the config names no tracker and `gh` isn't usable here. Get the repo as *Command shape* describes.
 
 ```bash
 gh issue list --repo <owner>/<repo> --state open
@@ -282,30 +304,22 @@ gh issue list --repo <owner>/<repo> --state open
 - Follow-up items from this session not yet captured? File issues. Keep each self-contained — a future agent should understand the problem without this conversation.
 - **Claimed issues.** For any issue this session marked as in-progress, remove that label and leave a comment summarizing what happened, whether it's closed or left open pending something. The label means "someone is actively on this right now", not "unresolved".
 
-**Labeling gate — every issue filed this session.** Copy the convention in the config (or from 2–3 recently filed issues); don't invent labels. Automated triage typically sweeps by label, so an unlabeled issue is invisible to it.
+**Labeling gate — every issue filed this session.** Copy the convention in the config (or from 2–3 recently filed issues); don't invent labels. If the convention's labels don't exist yet, create them first (`gh label create "<name>" --repo <owner>/<repo> --force`, one per label). Automated triage typically sweeps by label, so an unlabeled issue is invisible to it. For each issue filed, check its labels:
 
 ```bash
-for n in <issue numbers filed this session>; do
-  count=$(gh issue view "$n" --repo <owner>/<repo> --json labels --jq '.labels | length')
-  [ "$count" -eq 0 ] && echo "UNLABELED: #$n — apply the repo's labels before finishing"
-done
+gh issue view <n> --repo <owner>/<repo> --json labels
 ```
 
-**Comment-currency gate — every issue this session commented on, closed, or referenced in a commit.** A long session posts an update partway through and keeps working; more commits land, other issues close, and the thread never gets a final pass. Before finishing, check whether each issue's last comment is actually the last word:
+Any with an empty list → apply the repo's labels before finishing.
+
+**Comment-currency gate — every issue this session commented on, closed, or referenced in a commit.** A long session posts an update partway through and keeps working; more commits land, other issues close, and the thread never gets a final pass. Before finishing, check whether each issue's last comment is actually the last word. For each issue, run these two on their own:
 
 ```bash
-for n in <issue numbers>; do
-  last_comment=$(gh issue view "$n" --repo <owner>/<repo> --json comments --jq '.comments[-1].createdAt // "1970-01-01T00:00:00Z"')
-  # Compare epochs, not strings: git's %cI carries a local offset (+10:00) while
-  # gh timestamps are UTC "Z", and comparing the two formats as strings gives
-  # false results either side of midnight UTC.
-  last_comment_epoch=$(date -u -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_comment" +%s 2>/dev/null || echo 0)   # BSD/macOS; GNU: date -u -d "$last_comment" +%s
-  last_commit_epoch=$(git log --grep="#$n" --format="%ct" -1)
-  if [ -n "$last_commit_epoch" ] && [ "$last_commit_epoch" -gt "$last_comment_epoch" ]; then
-    echo "REVIEW: #$n's last comment predates a commit that mentions it — check by hand, don't auto-post"
-  fi
-done
+gh issue view <n> --repo <owner>/<repo> --json comments --jq '(.comments[-1].createdAt // "1970-01-01T00:00:00Z") | fromdate'
+git log --grep="#<n>" --format="%ct" -1
 ```
+
+Both print a Unix epoch, so compare the two numbers directly: if the commit's is larger than the comment's, flag the issue for review. (Don't compare `%cI` against `gh`'s timestamps as strings: git's carries a local offset like `+10:00` while `gh` gives UTC `Z`.) An issue with no comments counts as epoch 0, and if `git log` prints nothing there is no commit to compare, so don't flag the issue.
 
 **This flags candidates; it doesn't prove staleness.** `--grep` matches any commit *message* containing the number, including a later close-out commit that only namechecks it. For each flag, read the last comment and ask: *does anything that happened after it change what a reader needs to know?* If yes, post a wrap-up comment synthesizing what happened since. If no, leave it — a comment that adds nothing is its own noise. (It's also a known false-positive on sessions whose whole deliverable was issue comments; judge by hand.)
 
@@ -321,14 +335,12 @@ Read this file. Reflect on what this close-out found:
 
 **Two targets — decide which each finding belongs to:**
 
-- **About the flow** (applies in any repo) → a proposal in `IMPROVEMENTS.md` next to this file (resolve any symlink: `readlink -f ~/.claude/skills/close-out`). **Don't edit this SKILL.md directly** — it's shared across every repo; surface the proposal to the user first. That file lives in the skill's home repo, which may not be the current one: write the entry, tell the user the path, and commit it there only if they say so.
+- **About the flow** (applies in any repo) → a proposal for this skill's source repo (the `repository` in the plugin's `.claude-plugin/plugin.json`), in its `skills/close-out/IMPROVEMENTS.md`. **Don't edit this SKILL.md directly** — it's shared across every repo, and an installed plugin copy is overwritten on the next update anyway. Surface the proposal to the user first. The source repo usually isn't the current one: draft the entry, and write and commit it in a clone of that repo only if the user says so.
 - **About this repo** (a gate to add, a doc to track) → propose a diff to `.claude/close-out.md` and apply it after the user approves.
 
 **Dedupe before writing.** Repetition inside a proposals file is evidence a theme was missed, not noticed.
 
-```bash
-grep -n "^## " <path>/IMPROVEMENTS.md | grep -i "<2-3 keywords for your theme>"
-```
+Search the file's `## ` headings for 2–3 keywords from your theme (Grep tool, case-insensitive).
 
 - **0 matches** → write the proposal.
 - **1–2 matches** → don't write a new entry; append your evidence (date, what happened, commit SHA) to the existing one.
@@ -344,7 +356,7 @@ Steps 2–6 usually edit things after Step 1's commit: doc fixes, config changes
 2. Commit exactly the paths steps 2–6 and the run log touched, using the Step 1 pathspec rule. Push per policy.
 3. `git status` should show none of *your* paths. Other sessions' changes aren't yours; leave them.
 
-For a parked session, first give the return date, the wake-up trigger and the `/compact` line, then use this closing banner instead of the standard one below:
+For a parked session, first give the return date, the wake-up trigger and the `/compact` line. The closing report below still applies; end with this banner **instead of** the standard one:
 
 ```
 ---------------------------------
@@ -352,7 +364,9 @@ Session parked until <when>
 ---------------------------------
 ```
 
-Otherwise, output exactly this as the final message (or the config's `## Closing message`, if it sets one):
+**Closing report.** Default: a short scannable summary — what was committed (with hashes), issues opened or closed, anything needing the user's call, and what was deliberately left uncommitted. Real hashes and issue numbers, so it doubles as a receipt. If the config's `## Closing message` gives a report format, use that instead. If a write was denied or failed, say what landed and what didn't; never report success you didn't confirm.
+
+Unless the session is parked (banner above), end with exactly this as the final message (or the banner the config's `## Closing message` sets). The parked banner always wins when parked; a custom `Banner:` replaces only this standard one:
 
 ```
 ---------------------------------

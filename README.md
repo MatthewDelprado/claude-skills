@@ -1,6 +1,6 @@
 # claude-skills
 
-Personal Claude Code skills that work in any repo. No repo-specific paths or tools baked in; anything repo-specific is read from a config file in that repo.
+Personal Claude Code skills that work in any repo. No repo-specific paths or tools baked in. Each skill has universal defaults, and a repo can override any of them with a config file (`.claude/close-out.md`, `.claude/session-title.md`) that records only what differs there.
 
 ## Skills
 

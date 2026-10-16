@@ -40,7 +40,7 @@ Only ever one prefix. Precedence if more than one applies: `closing` > `waiting`
 | `done` | Wrap-up finished and nothing is left to come back for | `Done - ` |
 
 - `NEED` is 2–4 words naming what the user has to do ("1Password setup", "approve PR", "pick option", "check garage door"). Name the action, not the reason. Required for `waiting`.
-- `WHEN` is the wake time as the user would say it ("Monday 9am", "Sun 4 Oct 10am", "Tomorrow 7pm"). Required for `parked`.
+- `WHEN` is the wake time as a **weekday plus time**, never a relative word: "Thu 7:30pm", "Mon 9am", adding the date if it's more than 6 days out ("Sat 17 Oct 9am"). "Today 7pm" is allowed only for the same day. Never "Tomorrow", "Tonight" or "Next week": the user often returns a day or more later, and a relative label is wrong by then. Convert any relative time you're given into the weekday before using it. Required for `parked`.
 
 **In `auto`:**
 1. If the last turn ended by handing the user a to-do or a question the work can't proceed without → `waiting`, with `NEED` taken from it.

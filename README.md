@@ -28,6 +28,8 @@ The plugin has no `version` on purpose, so every push to `main` counts as an upd
 
 Editing: work in a normal clone of this repo, push, and the change reaches each machine at its next startup.
 
+Installed on: a personal Mac and a work Mac. The work Mac pushes through a second GitHub account added as a collaborator with write access.
+
 If a machine's admin settings block third-party marketplaces, fall back to symlinks:
 
 ```bash

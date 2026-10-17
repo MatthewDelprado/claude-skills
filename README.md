@@ -28,6 +28,8 @@ The plugin has no `version` on purpose, so every push to `main` counts as an upd
 
 Editing: work in a normal clone of this repo, push, and the change reaches each machine at its next startup.
 
+Installed on: the personal Mac and the Culture Amp work Mac (GitHub `mattdelprado-ca`, a collaborator with push access).
+
 If a machine's admin settings block third-party marketplaces, fall back to symlinks:
 
 ```bash

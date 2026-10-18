@@ -28,7 +28,7 @@ The plugin has no `version` on purpose, so every push to `main` counts as an upd
 
 Editing: work in a normal clone of this repo, push, and the change reaches each machine the next time its Claude app is restarted.
 
-Installed on: the personal Mac and the Culture Amp work Mac (GitHub `mattdelprado-ca`, a collaborator with push access).
+Installed on: a personal Mac and a work Mac. The work Mac pushes through a second GitHub account added as a collaborator with write access.
 
 If a machine's admin settings block third-party marketplaces, fall back to symlinks:
 

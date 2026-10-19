@@ -44,7 +44,11 @@ jobs:
                  description has clear trigger phrases so the skill fires when
                  intended and not on unrelated messages.
               2. Genericity: no personal, employer or repo-specific names, paths,
-                 tools or secrets. Skills must work in any repo.
+                 tools or secrets. Skills must work in any repo. Per CLAUDE.md,
+                 no workplace may be named anywhere: skills, README, manifests,
+                 commit messages, the PR title and body, or commit author emails
+                 (check them with gh pr view --json commits). Flag any hit as
+                 must-fix, not optional.
               3. Collisions: trigger phrases that overlap another skill in skills/.
               4. Docs and manifests: README skills table, install snippet and
                  .claude-plugin descriptions list every skill in skills/.

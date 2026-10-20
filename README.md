@@ -10,8 +10,9 @@ Personal Claude Code skills that work in any repo. No repo-specific paths or too
 | [`close-out`](skills/close-out/SKILL.md) | End-of-session cleanup: session summary, commit only this session's work, stale-reference audit, docs and verification check, issue tidy-up, self-improvement proposals. Repo-specific steps come from `.claude/close-out.md`; the first run in a repo interviews you to create it. Trigger: "close out", "wrap up". |
 | [`whats-next`](skills/whats-next/SKILL.md) | Walks you through the remaining work one decision per turn, each with a recommended default, until the session is blocked or done, then hands off to `close-out`. Trigger: "what's next", "what's left". |
 | [`bro`](skills/bro/SKILL.md) | Makes the last message easier to understand: restates it in plain language with no jargon, tables any options with factors and a recommendation, and opens with a very brief summary (one or two sentences) when the conversation is deep in detail. Trigger: "bro", "wtf". |
+| [`show-me`](skills/show-me/SKILL.md) | Explains things visually, fast, in the session: picks the quickest visual that shows the shape of an idea (before→after, journey strip, concept map, scorecard, 2×2, status board, sketch mockup) instead of prose. Sketches only, no files or publishing. Files a scrubbed GitHub issue here, after your OK, when a visual doesn't work. Trigger: "show me", "visualise this". |
 
-`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone, and `bro` stands alone.
+`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone. `bro` and `show-me` stand alone; `show-me` may suggest `bro` when something doesn't draw.
 
 ## Install
 
@@ -22,7 +23,7 @@ As a plugin (recommended; works on any machine, updates itself):
 /plugin install dp@dp-skills
 ```
 
-Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`, `dp:show-me`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
 
 The plugin has no `version` on purpose, so every push to `main` counts as an update.
 
@@ -34,10 +35,11 @@ If a machine's admin settings block third-party marketplaces, fall back to symli
 
 ```bash
 gh repo clone MatthewDelprado/claude-skills ~/.claude/claude-skills
-for s in rename-session close-out whats-next bro; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
+for s in rename-session close-out whats-next bro show-me; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
 ```
 
 ## Requirements
 
 - `rename-session` renames through the Claude desktop app's session tools (`mcp__ccd_session_mgmt__set_session_title`). In a plain terminal without them it prints the title for you to apply with `/rename`.
 - `close-out` uses `git` and, for the issue steps, the `gh` CLI. Outside a git repo it skips the git steps.
+- `show-me` draws inline visuals with the Claude desktop app's inline-visual tool; in a plain terminal it uses text-only formats. Its feedback issues need the `gh` CLI; without it, it shows the draft for you to file.

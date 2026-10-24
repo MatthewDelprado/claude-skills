@@ -7,7 +7,7 @@ description: Explain something visually, fast, right in the session. Picks the q
 
 The user wants to *see* something instead of reading about it. Draw the quickest visual that shows its shape, inline, now. This is a sketch for one person mid-conversation, not a deliverable: speed beats polish every time.
 
-Works in any repo. Draws best in the Claude desktop app; in a plain terminal it falls back to text-only formats. Optional companion: `bro` (say it simpler, in words).
+Works in any repo. Draws best in the Claude desktop app with the Mermaid Chart connector installed; without it, inline visuals and markdown cover everything, and in a plain terminal it falls back to text-only formats. Optional companion: `bro` (say it simpler, in words).
 
 ---
 
@@ -46,12 +46,18 @@ Check once, from the tools you have:
 
 | Tier | What | When |
 |---|---|---|
-| **1. Markdown** | Tables, box-drawing, indented trees, arrow strips (→), lanes for sequences | **Default.** Fastest; works everywhere, including a plain terminal. Flows and sequences go here too |
-| **2. Inline visual** | A small SVG/HTML visual drawn in the chat by the app's inline-visual tool (in the Claude desktop app, `show_widget`) | When layout *is* the point and markdown would lose it: 2×2s, concept maps, mockups, fishbones, mini charts, or a flow whose branching makes text lanes unreadable |
+| **1. Markdown** | Tables, box-drawing, indented trees, arrow strips (→), lanes for sequences | **Default.** Fastest; works everywhere, including a plain terminal. Simple flows and sequences go here too |
+| **2. Inline visual** | A visual drawn in the chat by an app tool. Two kinds: the **Mermaid Chart connector** (tool `display_mermaid`, which may appear namespaced like `mcp__<id>__display_mermaid`), or the app's own inline-visual tool (in the Claude desktop app, `show_widget`) | When layout *is* the point and markdown would lose it |
 
-**No Mermaid.** It shows as raw code in the Claude desktop app and in a terminal. No inline-visual tool means you're in a plain terminal: use Tier 1 only. Never produce a format the place can't show.
+**Which inline tool.** Mermaid when the shape is a graph it has a native type for: a flow or decision tree with branches, a sequence between actors, a concept map or entity relationships, a state machine, a timeline or roadmap. It lays out and routes the lines for you, so it beats hand-drawn SVG for those. `show_widget` for everything Mermaid can't place: 2×2s, mockups, fishbones, mini charts, scorecards with styling, what-ifs. A flow that fits a simple strip still goes in markdown (Tier 1).
 
-**Before your first inline visual in a session, load the tool's guide** (for `show_widget`, call its `read_me` with the module that fits, e.g. `diagram` or `mockup`). Do it silently; don't mention it to the user. It's required, not polish: use only the classes and colour variables it defines, never invent variables or hard-code text colours, and make sure it reads in dark mode as well as light. **This skill decides *what* to draw; the guide decides *how*.** Where the guide nudges towards extras (clickable nodes, several diagrams, interactivity), keep it a single static sketch unless the format is a what-if.
+**Mermaid is a connector, never raw text.** Without the connector it shows as code in the desktop app and a terminal, so never paste a ```` ```mermaid ```` block into the chat. Call `display_mermaid` with the diagram, once, for one sketch. If it asks for sign-in, say so in a line and draw in Tier 1 or `show_widget` meanwhile; don't stall. Use only `display_mermaid`: never `save_diagram`, `update_diagram`, or anything that stores the diagram in the user's account (see Out of scope). If it errors on syntax, one `repair_diagram` try is fine, then fall back.
+
+**Connector missing: nudge once.** If the subject is a Mermaid-shaped one (above) and no Mermaid tool is available, draw it anyway in Tier 1 or `show_widget`, then add one line under it, once per session: `Tip: the Mermaid Chart connector would draw this one properly. Install it from the connectors list (Settings > Connectors) and ask again.` Not when the subject wasn't Mermaid-shaped, not in a plain terminal (no connectors there), and never again after the user ignores or declines it.
+
+No inline-visual tool at all means you're in a plain terminal: use Tier 1 only. Never produce a format the place can't show.
+
+**Before your first inline visual in a session, load the tool's guide** (for `show_widget`, call its `read_me` with the module that fits, e.g. `diagram` or `mockup`). Do it silently; don't mention it to the user. It's required, not polish: use only the classes and colour variables it defines, never invent variables or hard-code text colours, and make sure it reads in dark mode as well as light. **This skill decides *what* to draw; the guide decides *how*.** Where the guide nudges towards extras (clickable nodes, several diagrams, interactivity), keep it a single static sketch unless the format is a what-if. For Mermaid, keep the diagram to the same 3–7 elements, with short labels, and no custom styling beyond what makes the point.
 
 ## 3. Pick the format
 
@@ -170,7 +176,7 @@ The feedback loop is how this skill improves. Failures only; never ask "was that
 - You can tell your own visual failed — e.g. the user replies "I just see code", or says the layout is broken.
 - The user wanted a format that isn't in the library ("I wanted a Sankey and there wasn't one").
 
-**Fix it first.** Before drafting anything, give the user what they wanted. After a render failure, redraw in Tier 1 — or Tier 2 if layout is the whole point (2×2, mockup, fishbone) — and don't reuse the format or tier that failed for the rest of the session. For a missing or wrong format, draw the one they asked for. Then draft the feedback below the fixed visual.
+**Fix it first.** Before drafting anything, give the user what they wanted. After a render failure, redraw in Tier 1 — or Tier 2 if layout is the whole point (2×2, mockup, fishbone); after a Mermaid render failure, use `show_widget` or Tier 1, not Mermaid again — and don't reuse the format or tier that failed for the rest of the session. For a missing or wrong format, draw the one they asked for. Then draft the feedback below the fixed visual.
 
 Wanted a format that's in the library but you picked another → `wrong-format`. Wanted one that isn't in the library at all → `missing-format`.
 
@@ -207,6 +213,6 @@ Without `gh`, or without access, show the draft for the user to file by hand.
 
 ## Out of scope
 
-- Polished, shareable or persistent visuals: no files written, nothing published, no outside canvases (whiteboards, design tools, docs).
+- Polished, shareable or persistent visuals: no files written, nothing published, no outside canvases (whiteboards, design tools, docs). That includes saving a diagram to a Mermaid account: `display_mermaid` only.
 - Code-review formats: diff trees, file lists, call stacks for review.
 - Visualising unprompted. This skill runs only when asked.

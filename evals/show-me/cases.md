@@ -47,7 +47,7 @@ Each case is a conversation snapshot plus the user's latest message. A runner re
 **User:** show me these as a 2x2
 
 ## C10 — named format, plain terminal
-**Environment override:** Plain Claude Code terminal. There is **no** inline-visual tool and Mermaid does not render.
+**Environment override:** Plain Claude Code terminal. There is **no** inline-visual tool and no Mermaid connector.
 **Context:** Same six features and estimates as C09.
 **User:** show me these as a 2x2
 
@@ -92,7 +92,7 @@ Shift: small receipted claims skip the 3-day wait
 **User:** this is great — make it nice, I want to share it with the team in Slack
 
 ## C16 — feedback: self-detected render failure, matching issue exists
-**Context:** The user asked "show me the deploy flow for Ledgerline" and the assistant replied with a Mermaid flowchart (from an older version of the skill) (nodes: "Merge to main" → "Acme CI build" → "Canary 5%" → "Full rollout", with a "Rollback" branch from Canary).
+**Context:** The user asked "show me the deploy flow for Ledgerline" and the assistant replied with a pasted Mermaid code block (from an older version of the skill) (nodes: "Merge to main" → "Acme CI build" → "Canary 5%" → "Full rollout", with a "Rollback" branch from Canary).
 **User:** I just see a block of code, not a diagram
 **Assumptions for this case:** The repo `MatthewDelprado/claude-skills` is **public**. Searching open issues finds **#12** "show-me: mermaid didn't-render — flowchart shown as code", labelled `show-me`, `format:mermaid`, `didn't-render`.
 
@@ -104,3 +104,13 @@ Shift: small receipted claims skip the 3-day wait
 ## C18 — "show me" + an idea that names a file
 **Context:** The assistant just refactored `checkout.ts`, splitting one 400-line function into a pipeline: validate cart → price → apply discounts → reserve stock → charge → confirm.
 **User:** show me how checkout works now
+
+## C19 — flow, Mermaid connector installed
+**Environment override:** Desktop app. The Mermaid Chart connector is installed (`display_mermaid` available) along with `show_widget`.
+**Context:** The assistant explained a refund flow: customer requests → auto-check amount; under 50 → auto-approve; over 50 → manager review → approve or reject; approved → pay out; rejected → notify customer.
+**User:** show me that flow
+
+## C20 — flow, connector missing
+**Environment override:** Desktop app. `show_widget` is available; no Mermaid tool.
+**Context:** Same refund flow as C19.
+**User:** show me that flow

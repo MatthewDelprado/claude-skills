@@ -42,4 +42,4 @@ for s in rename-session close-out whats-next bro show-me; do ln -s ~/.claude/cla
 
 - `rename-session` renames through the Claude desktop app's session tools (`mcp__ccd_session_mgmt__set_session_title`). In a plain terminal without them it prints the title for you to apply with `/rename`.
 - `close-out` uses `git` and, for the issue steps, the `gh` CLI. Outside a git repo it skips the git steps.
-- `show-me` draws inline visuals with the Claude desktop app's inline-visual tool; in a plain terminal it uses text-only formats. Its feedback issues need the `gh` CLI; without it, it shows the draft for you to file.
+- `show-me` draws inline visuals with the Claude desktop app's inline-visual tool, and flows, sequences and concept maps with the Mermaid Chart connector when it's installed (it nudges you to add it when it isn't); in a plain terminal it uses text-only formats. Its feedback issues need the `gh` CLI; without it, it shows the draft for you to file.

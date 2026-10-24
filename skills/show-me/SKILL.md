@@ -53,7 +53,13 @@ Check once, from the tools you have:
 
 **Mermaid is a connector, never raw text.** Without the connector it shows as code in the desktop app and a terminal, so never paste a ```` ```mermaid ```` block into the chat. Call `display_mermaid` with the diagram, once, for one sketch. If it asks for sign-in, say so in a line and draw in Tier 1 or `show_widget` meanwhile; don't stall. Use only `display_mermaid`: never `save_diagram`, `update_diagram`, or anything that stores the diagram in the user's account (see Out of scope). If it errors on syntax, one `repair_diagram` try is fine, then fall back.
 
-**Connector missing: nudge once.** If the subject is a Mermaid-shaped one (above) and no Mermaid tool is available, draw it anyway in Tier 1 or `show_widget`, then add one line under it, once per session: `Tip: the Mermaid Chart connector would draw this one properly. Install it from the connectors list (Settings > Connectors) and ask again.` Not when the subject wasn't Mermaid-shaped, not in a plain terminal (no connectors there), and never again after the user ignores or declines it.
+**Connector missing: offer to install it, once.** Whenever show-me runs in the desktop app and no Mermaid tool is available, whatever the subject, draw the sketch first (Tier 1 or `show_widget`, never raw Mermaid), then offer the install in the same turn:
+
+1. Call the registry's `search_mcp_registry` with `["mermaid"]` and pick the Mermaid Chart result.
+2. If it isn't connected, call `suggest_connectors` with its `directoryUuid` and the keyword `diagrams`. That renders a Connect card; installing is the user's click, never yours.
+3. Add one line under the sketch: `I drew this without Mermaid Chart; connect it with the card above and flows and sequences will draw properly next time.`
+
+If the registry tools aren't available, give the one-line tip with the path instead (Settings > Connectors > Mermaid Chart). Offer once per session, and never again after the user ignores or declines. Not in a plain terminal (no connectors there). If the connector is installed but disabled for chat, say so in the line instead of suggesting an install. Once connected it may need a new session before `display_mermaid` appears; say so if the user asks again straight after connecting.
 
 No inline-visual tool at all means you're in a plain terminal: use Tier 1 only. Never produce a format the place can't show.
 

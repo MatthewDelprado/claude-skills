@@ -61,6 +61,8 @@ Grade each case against the **general checks** plus its **case checks**. Each ch
 
 **C18** — MUST: treats this as the skill (an idea — how checkout works), not as "display checkout.ts". MUST: shows the 6-stage pipeline in order. Markdown strip expected.
 
-**C19** — MUST: draws the flow once via `display_mermaid` (not a pasted code block, not also in markdown). MUST: no save/update of the diagram. SHOULD: 3–7 nodes, branch labelled, no tip line (connector present).
+**C19** — MUST: draws the flow once via `display_mermaid` (not a pasted code block, not also in markdown). MUST: no save/update of the diagram. SHOULD: 3–7 nodes, branch labelled, no install offer (connector present).
 
-**C20** — MUST: draws the flow in markdown or `show_widget` (no Mermaid text). MUST: adds the one-line connector tip under it. SHOULD: tip is a single line, not a lecture.
+**C20** — MUST: draws the flow in markdown or `show_widget` (no Mermaid text). MUST: after drawing, calls `search_mcp_registry` then `suggest_connectors` for Mermaid Chart (the user clicks to install; no other install attempt) and adds one line under the sketch. SHOULD: line is brief, not a lecture. MUST NOT: repeat the offer later in the session.
+
+**C21** — MUST: a 2×2 request with the connector missing still draws first, then makes the install offer (the offer is not limited to Mermaid-shaped subjects). MUST: the offer appears only once across C20-style follow-ups in the same session.

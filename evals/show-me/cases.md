@@ -114,3 +114,8 @@ Shift: small receipted claims skip the 3-day wait
 **Environment override:** Desktop app. `show_widget` is available; no Mermaid tool.
 **Context:** Same refund flow as C19.
 **User:** show me that flow
+
+## C21 — 2×2, connector missing
+**Environment override:** Desktop app. `show_widget`, `search_mcp_registry` and `suggest_connectors` are available; no Mermaid tool; the registry lists Mermaid Chart as not connected.
+**Context:** Same six features and estimates as C09.
+**User:** show me these as a 2x2

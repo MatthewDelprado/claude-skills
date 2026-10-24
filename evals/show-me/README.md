@@ -1,6 +1,6 @@
 # show-me evals
 
-20 scenarios ([cases.md](cases.md)) and a grading rubric ([rubric.md](rubric.md)) for [`show-me`](../../skills/show-me/SKILL.md).
+21 scenarios ([cases.md](cases.md)) and a grading rubric ([rubric.md](rubric.md)) for [`show-me`](../../skills/show-me/SKILL.md).
 
 ## How to run
 
@@ -18,4 +18,4 @@ Keep run outputs out of the repo (scratch space). They contain the fake confiden
 | 2 | 2026-10-20 | 17 × 3, 1 × 2 | Mermaid removed (shows as code in the desktop app); sequence, wrapped-strip and 2×2 examples; "Your move" rule; feedback template records the fix without claiming it worked |
 | 3 | 2026-10-20 | Re-test of C07, C10, C12, C16, C17: four × 3; C17 exposed a label contradiction (fishbone had joined the library) | C17 rewritten as a Sankey case; `format:` rule for wrong/missing format; quoted label names; 2×2 marker on the centre column; checks before preview |
 | 3b | 2026-10-20 | C17 only, on Sonnet (Opus runs were blocked by an API safety false positive): all MUST checks pass; graded by hand | Hard-coded fill colours in the inline visual (G11 partial) |
-| 4 | not yet run | C19, C20 added for the Mermaid Chart connector (used when installed, one-line install nudge when not) | — |
+| 4 | not yet run | C19–C21 added for the Mermaid Chart connector (used when installed; install card offered once when not) | — |

@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this", "diagram this", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
+description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this as a diagram", "diagram this", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
 ---
 
 # Show me
@@ -66,14 +66,14 @@ If you must use the connector anyway (for example, to validate syntax), never re
 - Sentence case labels, no emoji, no mid-sentence bold.
 - Short labels in boxes (title plus at most five words of subtitle).
 - After rendering, say in one line what each diagram shows. Don't re-describe it.
-- If a diagram doesn't appear for the user, say what you tried and switch method (see the ladder below). Don't repeat the same call.
+- If a diagram doesn't appear for the user, say what you tried and switch method (see the fallback list in section 4). Don't repeat the same call.
 
 ## 4. When the tool is missing, offer the right connector
 
 Before drawing, check which render tools are in this session: `mcp__visualize__show_widget` (inline widgets) and any diagram, Figma or docs connector. Then:
 
 1. **`show_widget` present:** use it. No connector needed, even for Mermaid.
-2. **`show_widget` absent and the user wants live diagrams:** search for a connector with `mcp__mcp-registry__search_mcp_registry` (keywords such as `diagram`, `mermaid`, `whiteboard`), then show the match with `mcp__mcp-registry__suggest_connectors`. These are deferred tools, so load their schemas with ToolSearch first. If the registry isn't available, try `SearchPlugins` then `SuggestPluginInstall`.
+2. **`show_widget` absent and the user wants live diagrams:** search for a connector with `mcp__mcp-registry__search_mcp_registry` (keywords such as `diagram`, `mermaid`, `whiteboard`), then show the match with `mcp__mcp-registry__suggest_connectors`. These are deferred tools, so load their schemas with ToolSearch first. If the registry tools aren't available, use `ToolSearch` with the query `plugin` to find the plugin search and install-suggestion tools (`SearchPlugins`, `SuggestPluginInstall`) and use those instead; if neither route exists, skip to the fallbacks.
 3. **Nothing installable or the user declines:** fall back, in this order:
    1. A fenced ` ```mermaid ` block in the reply (renders in claude.ai, GitHub and Notion).
    2. A Notion page or doc if the picture should be kept and shared.

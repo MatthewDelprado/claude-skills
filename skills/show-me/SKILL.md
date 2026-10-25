@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, charts, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me", "explain visually", "draw this", "diagram this", "visualise", "chart this", "map this out", "how does X fit together".
+description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this", "diagram this", "visualize this", "visualise this", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
 ---
 
 # Show me
@@ -24,7 +24,7 @@ If the first diagram would need more than about 7 nodes, split it: an overview, 
 
 The Mermaid connector tool (`validate_and_render_mermaid_diagram`) returns the whole rendered SVG inside its tool result: 60–100k characters per diagram. That exceeds the result limit, so the result is dumped to a file and the diagram often never shows in chat. In practice, three connector calls in one turn displayed nothing. Do not use it for display.
 
-What works: load the widget guidance once (`mcp__visualize__read_me`, modules `diagram`; do not narrate it), then call `show_widget` with an HTML fragment that imports mermaid.js. One diagram per call. Keep this init block as is, since the font and size are used for layout measurement:
+What works: load the widget guidance once (`mcp__visualize__read_me`, modules `diagram`; do not narrate it), then call `show_widget` with an HTML fragment that imports mermaid.js. One diagram per call. Keep the init block below exactly as written, since the font and size are used for layout measurement. Replace only the Mermaid source inside the `mermaid.render` template literal (the `flowchart TD ...` body is a placeholder), and the `<h2>` summary:
 
 ```html
 <h2 class="sr-only">One sentence describing the diagram</h2>
@@ -57,7 +57,7 @@ Mermaid tips:
 - Don't use `classDef` colours; the base theme already follows light and dark mode.
 - Give each widget a unique render id (`fc-svg`, `sq-svg`) if you draw more than one.
 
-If you must use the connector anyway (for example, to validate syntax), never read its result. It lands in a saved file; check it with `jq '.valid'` on that file and stop there.
+If you must use the connector anyway (for example, to validate syntax), never read its result. It lands in a saved file; if `jq` is available, check `jq '.valid'` on that file and stop there, otherwise treat the diagram as unvalidated and render it with `show_widget`.
 
 ## 3. Rules for what goes in the chat
 

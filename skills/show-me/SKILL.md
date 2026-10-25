@@ -16,7 +16,8 @@ The user wants to see it, not read it. Pick the form, render it inline, keep the
 | Tables, fields, relationships | Mermaid `erDiagram` / `classDiagram` | `show_widget` + mermaid.js |
 | Parts and how they connect (overview) | SVG structural diagram | `show_widget` (SVG) |
 | "How does X actually work" (a feel for it) | Illustrative or interactive widget | `show_widget` (HTML + inline SVG) |
-| Numbers | Chart | `show_widget` (Chart.js) |
+
+Numeric charts and dashboards are out of scope: use `dataviz` if it's installed.
 
 If the first diagram would need more than about 7 nodes, split it: an overview, then one diagram per sub-flow, with a short paragraph between each. Only promise the diagrams you actually draw.
 
@@ -24,13 +25,13 @@ If the first diagram would need more than about 7 nodes, split it: an overview, 
 
 The Mermaid connector tool (`validate_and_render_mermaid_diagram`) returns the whole rendered SVG inside its tool result: 60–100k characters per diagram. That exceeds the result limit, so the result is dumped to a file and the diagram often never shows in chat. In practice, three connector calls in one turn displayed nothing. Do not use it for display.
 
-What works: load the widget guidance once (`mcp__visualize__read_me`, modules `diagram`; do not narrate it), then call `show_widget` with an HTML fragment that imports mermaid.js. One diagram per call. Keep the init block below exactly as written, since the font and size are used for layout measurement. Replace only the Mermaid source inside the `mermaid.render` template literal (the `flowchart TD ...` body is a placeholder), and the `<h2>` summary:
+What works: load the widget guidance once (`mcp__visualize__read_me`, modules `diagram`; do not narrate it), then call `show_widget` with an HTML fragment that imports mermaid.js, pinned to an exact version so a CDN change can't silently blank the widget (bump it deliberately). One diagram per call. Keep the init block below exactly as written, since the font and size are used for layout measurement. Replace only the Mermaid source inside the `mermaid.render` template literal (the `flowchart TD ...` body is a placeholder), and the `<h2>` summary:
 
 ```html
 <h2 class="sr-only">One sentence describing the diagram</h2>
 <div id="d" style="width:100%"></div>
 <script type="module">
-import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+import mermaid from 'https://esm.sh/mermaid@11.17.2/dist/mermaid.esm.min.mjs';
 const themeMode = document.documentElement.dataset.mode;
 const dark = themeMode ? themeMode === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
 await document.fonts.ready;

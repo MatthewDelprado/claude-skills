@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this as a diagram", "diagram this", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
+description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this as a diagram", "diagram this flow", "diagram this system", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
 ---
 
 # Show me
@@ -23,7 +23,7 @@ If the first diagram would need more than about 7 nodes, split it: an overview, 
 
 ## 2. Render Mermaid through `show_widget`, not the Mermaid connector
 
-The Mermaid connector tool (`validate_and_render_mermaid_diagram`) returns the whole rendered SVG inside its tool result: 60–100k characters per diagram. That exceeds the result limit, so the result is dumped to a file and the diagram often never shows in chat. In practice, three connector calls in one turn displayed nothing. Do not use it for display.
+As observed in October 2026, the Mermaid connector tool (`validate_and_render_mermaid_diagram`) returns the whole rendered SVG inside its tool result: 60–100k characters per diagram. That exceeds the result limit, so the result is dumped to a file and the diagram often never shows in chat. If the connector changes, re-test this before relying on the advice. In practice, three connector calls in one turn displayed nothing. Do not use it for display.
 
 What works: load the widget guidance once (`mcp__visualize__read_me`, modules `diagram`; do not narrate it), then call `show_widget` with an HTML fragment that imports mermaid.js, pinned to an exact version so a CDN change can't silently blank the widget (bump it deliberately). One diagram per call. Keep the init block below exactly as written, since the font and size are used for layout measurement. Replace only the Mermaid source inside the `mermaid.render` template literal (the `flowchart TD ...` body is a placeholder), and the `<h2>` summary:
 

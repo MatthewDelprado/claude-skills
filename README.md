@@ -23,11 +23,13 @@ As a plugin (recommended; works on any machine, updates itself):
 /plugin install dp@dp-skills
 ```
 
-Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`, `dp:show-me`. Updates arrive at startup when auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills).
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`, `dp:show-me`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
 
 The plugin has no `version` on purpose, so every push to `main` counts as an update.
 
-Editing: work in a normal clone of this repo, push, and the change reaches each machine at its next startup.
+Editing: work in a normal clone of this repo, push, and the change reaches each machine the next time its Claude app is restarted.
+
+Installed on: a personal Mac and a work Mac. The work Mac pushes through a second GitHub account added as a collaborator with write access.
 
 If a machine's admin settings block third-party marketplaces, fall back to symlinks:
 

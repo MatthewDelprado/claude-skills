@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this", "diagram this", "visualize this", "visualise this", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
+description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this", "diagram this", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
 ---
 
 # Show me

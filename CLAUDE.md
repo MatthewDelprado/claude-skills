@@ -10,4 +10,4 @@ Workplace-specific behaviour belongs in that workplace's own repo, as a config o
 
 ## Known history
 
-A few early commits predate this rule and carry a work author identity. They were left in place on purpose: rewriting `main` would break every clone and the installed plugin. Reviewers should not flag them. New commits must not repeat it: on a work machine, check `git config user.email` before committing here.
+A few early commits predate this rule and carry a work author identity. They were left in place on purpose: rewriting `main` would break every clone and the installed plugin. Reviewers should not flag the commits already on `main` as of this note; any new commit with a work identity must still be flagged. New commits must not repeat it: on a work machine, check `git config user.email` before committing here.

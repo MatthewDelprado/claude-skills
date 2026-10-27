@@ -40,7 +40,7 @@ Only ever one prefix. Precedence if more than one applies: `closing` > `waiting`
 | `done` | Wrap-up finished and nothing is left to come back for | `Done - ` |
 
 - `NEED` is 2–4 words naming what the user has to do ("1Password setup", "approve PR", "pick option", "check garage door"). Name the action, not the reason. Required for `waiting`.
-- `WHEN` is the wake date. In the title it is always written **`MM.DD`**, zero-padded, year left off (assumed): `12.15`, `01.07`, `10.31`. No weekday, no time of day, no "Today". This lets the user sort the sidebar by name and see parked sessions in return order. Never a relative word ("Tomorrow", "Tonight", "Next week"): the user often returns a day or more later, and a relative label is wrong by then. Convert any relative or weekday-style time you're given ("Thu 7:30pm", "tomorrow 9am") into its calendar date before using it, and drop the time of day. Required for `parked`. Example: `12.15 - Payments API - #396 - verify - retry policy`.
+- `WHEN` is the wake date. In the title it is always written **`MM.DD`**, zero-padded, year left off (assumed): `12.15`, `01.07`, `10.31`. No weekday, no time of day, no "Today". This lets the user sort the sidebar by name and see parked sessions in return order. Never a relative word ("Tomorrow", "Tonight", "Next week"): the user often returns a day or more later, and a relative label is wrong by then. Convert any relative or weekday-style time you're given ("Thu 7:30pm", "tomorrow 9am") into its calendar date before using it, and drop the time of day. A return date that crosses New Year (parked in December for `01.07`) sorts before the other parked sessions; that's the accepted cost of leaving the year off. Required for `parked`. Example: `12.15 - Payments API - #396 - verify - retry policy`.
 
 **In `auto`:**
 1. If the last turn ended by handing the user a to-do or a question the work can't proceed without → `waiting`, with `NEED` taken from it.
@@ -66,7 +66,7 @@ Other skills (a close-out, a planning/grilling skill, a "what's next" walkthroug
 
 1. **Check for a repo override:** if `.claude/session-title.md` exists in the repo, read it. It can change the format, mode vocabulary or prefixes, and wins over the defaults above.
 2. **Get the current title:** `mcp__ccd_session_mgmt__get_session` with `session_id: "self"`. Load it with ToolSearch (`select:mcp__ccd_session_mgmt__get_session,mcp__ccd_session_mgmt__set_session_title`) if it's deferred.
-3. **Build the base title** from what the session is doing now. Strip any existing state prefix (`Closing out - `, `Needs you: … - `, `<time> - `, `Done - `) before comparing.
+3. **Build the base title** from what the session is doing now. Strip any existing state prefix (`Closing out - `, `Needs you: … - `, `Done - `, or a wake-date prefix) before comparing. A leading `MM.DD - ` is a state prefix, not part of the base title. Also strip the legacy wake-time form (`Thu 7:30pm - `, `Sat 17 Oct 9am - `) on sessions parked before the date format, so a resumed session isn't double-prefixed.
 4. **Apply the state prefix** from the table.
 5. **Skip if nothing changed.** If the new title equals the current one, don't call the rename tool.
 6. **Rename:** `mcp__ccd_session_mgmt__set_session_title` with `session_id: "self"`. If the user set the current title themselves, the app asks them to approve; if they decline, leave it and don't retry.

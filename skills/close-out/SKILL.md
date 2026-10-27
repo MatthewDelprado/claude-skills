@@ -23,7 +23,7 @@ Run shell commands one at a time, each a single static command: no `$(...)` or b
 
 For `gh`, always pass `--repo <owner>/<repo>` as a literal. Take it from the config's `## Issues` section; failing that, run `gh repo view --json nameWithOwner` once, on its own, and reuse the answer. The snippets below are shapes to follow, with `<placeholders>` you fill in.
 
-**Session title.** If the `rename-session` skill is installed, call it as the very first act (`rename-session STATE=closing`, before the summary) and as the last act, once everything has landed (`STATE=done`, `STATE=parked WHEN=<time>` or `STATE=waiting NEED=<what>`). Skip silently if it isn't there.
+**Session title.** If the `rename-session` skill is installed, call it as the very first act (`rename-session STATE=closing`, before the summary) and as the last act, once everything has landed (`STATE=done`, `STATE=parked WHEN=<date>` or `STATE=waiting NEED=<what>`). Skip silently if it isn't there.
 
 ---
 
@@ -161,7 +161,7 @@ When one is denied:
 
 Common case: the work is done for now, but there's a check at a known time (a soak, a week of real traffic, a reply). The user keeps the session open (not archived) and returns to it then. Treat it as parked when the user says so ("I'll check back on <date>", "don't archive") or when the follow-up is a check at a known time. A parked close-out runs every step as normal, plus:
 
-1. **Return date.** Pin it as a weekday plus date and time ("Sat 17 Oct 10am"), never a relative word.
+1. **Return date.** Pin it as a weekday plus date and time ("Sat 17 Oct 10am"), never a relative word. That full string is for the reminder and the return brief; the session title only takes the date, so pass just `MM.DD` as `WHEN` to `rename-session` (`WHEN=10.17`).
 2. **Return brief in the summary.** Step 0's `## Follow-up` opens with a `**Return <when>:**` checklist of exactly what to check on return, with where to look (files, logs, commands). Someone who has forgotten the session should be able to start from it.
 3. **Wake-up trigger.** Something must ping the user at the return time. Use the repo's reminder mechanism (config `## Parked sessions`), a scheduling tool if one is available, or say plainly that none exists. Put the session's `link` (from `mcp__ccd_session_mgmt__get_session`, `session_id: "self"`, when the desktop app tools are available) and the return checklist in the reminder text, so the ping leads straight back here.
 4. **Issues.** Claimed issues still get their in-progress label removed (Step 5). The hand-off comment names the return date and what will be decided then.

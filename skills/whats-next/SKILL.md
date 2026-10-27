@@ -35,7 +35,7 @@ Works in any repo. Optional companions, used only if installed: `rename-session`
 
 ## 0. Retitle the session — first act
 
-If the `rename-session` skill is installed, run it (auto) before building the queue. Work is resuming, so this drops any `Needs you:` / wake-time prefix and sets the mode to what's being finished. Silent; no report line. Skip if it isn't installed.
+If the `rename-session` skill is installed, run it (auto) before building the queue. Work is resuming, so this drops any `Needs you:` / wake-date prefix and sets the mode to what's being finished. Silent; no report line. Skip if it isn't installed.
 
 ## 1. Build the queue — don't ask for it
 
@@ -101,7 +101,7 @@ The one-per-turn cadence is a default, not a cage. Break it whenever one of thes
 
 Keep going until one of these is true. Don't stop just because the queue feels long, and don't invent a third exit.
 
-**A — Blocked and waiting.** Nothing left that can be done now; the next move depends on something hours away (a deploy soaking, someone's reply, a job firing, a physical check). Say what's blocked, on what, and when it's worth coming back. Offer to set the return trip with a reminder or scheduling tool if one is available; otherwise say plainly what to check and when. If the session is being kept open until then and `rename-session` is installed, rename it: blocked on something the user has to do → `rename-session STATE=waiting NEED=<what>`; blocked on time or someone else → `rename-session STATE=parked WHEN=<return time>`. Then stop.
+**A — Blocked and waiting.** Nothing left that can be done now; the next move depends on something hours away (a deploy soaking, someone's reply, a job firing, a physical check). Say what's blocked, on what, and when it's worth coming back. Offer to set the return trip with a reminder or scheduling tool if one is available; otherwise say plainly what to check and when. If the session is being kept open until then and `rename-session` is installed, rename it: blocked on something the user has to do → `rename-session STATE=waiting NEED=<what>`; blocked on time or someone else → `rename-session STATE=parked WHEN=<return date>`. Then stop.
 
 **B — Done.** Nothing left. Say so plainly in one line, then decide whether this is the end of the session:
 

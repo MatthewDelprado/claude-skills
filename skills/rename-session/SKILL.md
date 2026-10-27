@@ -1,6 +1,6 @@
 ---
 name: rename-session
-description: Rename the current Claude Code session so its sidebar title says what the session is doing right now — "<overall work> - <#issue> - <mode> - <specifics>", plus a state prefix when blocked on the user ("Needs you: <what> - "), parked until a set time ("<wake time> - "), closing out ("Closing out - ") or finished ("Done - "). Trigger on "/rename-session", "rename this session", "retitle this", "fix the session name". Other skills can call it at state changes with an explicit STATE.
+description: Rename the current Claude Code session so its sidebar title says what the session is doing right now — "<overall work> - <#issue> - <mode> - <specifics>", plus a state prefix when blocked on the user ("Needs you: <what> - "), parked until a set date ("MM.DD - "), closing out ("Closing out - ") or finished ("Done - "). Trigger on "/rename-session", "rename this session", "retitle this", "fix the session name". Other skills can call it at state changes with an explicit STATE.
 ---
 
 # rename-session
@@ -35,16 +35,16 @@ Only ever one prefix. Precedence if more than one applies: `closing` > `waiting`
 | `auto` (default) | Work out the state from the conversation | whichever fits below |
 | `working` | Actively working | none (strip any state prefix) |
 | `waiting` | Blocked until the user does something (setup step, decision, approval, physical check) | `Needs you: <NEED> - ` |
-| `parked` | Kept open and idle until a set time | `<WHEN> - ` |
+| `parked` | Kept open and idle until a set date | `MM.DD - `, e.g. `12.15 - ` |
 | `closing` | Wrap-up/close-out has started | `Closing out - ` |
 | `done` | Wrap-up finished and nothing is left to come back for | `Done - ` |
 
 - `NEED` is 2–4 words naming what the user has to do ("1Password setup", "approve PR", "pick option", "check garage door"). Name the action, not the reason. Required for `waiting`.
-- `WHEN` is the wake time as a **weekday plus time**, never a relative word: "Thu 7:30pm", "Mon 9am", adding the date if it's more than 6 days out ("Sat 17 Oct 9am"). "Today 7pm" is allowed only for the same day. Never "Tomorrow", "Tonight" or "Next week": the user often returns a day or more later, and a relative label is wrong by then. Convert any relative time you're given into the weekday before using it. Required for `parked`.
+- `WHEN` is the wake date. In the title it is always written **`MM.DD`**, zero-padded, year left off (assumed): `12.15`, `01.07`, `10.31`. No weekday, no time of day, no "Today". This lets the user sort the sidebar by name and see parked sessions in return order. Never a relative word ("Tomorrow", "Tonight", "Next week"): the user often returns a day or more later, and a relative label is wrong by then. Convert any relative or weekday-style time you're given ("Thu 7:30pm", "tomorrow 9am") into its calendar date before using it, and drop the time of day. Required for `parked`. Example: `12.15 - Payments API - #396 - verify - retry policy`.
 
 **In `auto`:**
 1. If the last turn ended by handing the user a to-do or a question the work can't proceed without → `waiting`, with `NEED` taken from it.
-2. Else if a reminder or watcher was just set, or the work is done for now and the next step is a check at a known time (a soak, a deploy verification, a reply due by then) → `parked`, with that time as `WHEN`. Set the mode to what happens on return (usually `verify`), not the work that just finished.
+2. Else if a reminder or watcher was just set, or the work is done for now and the next step is a check at a known date (a soak, a deploy verification, a reply due by then) → `parked`, with that date as `WHEN`. Set the mode to what happens on return (usually `verify`), not the work that just finished.
 3. Else → `working`.
 
 `auto` never picks `done` or `closing`; only a wrap-up flow sets those.
@@ -56,7 +56,7 @@ Other skills (a close-out, a planning/grilling skill, a "what's next" walkthroug
 | When | Call |
 |---|---|
 | Wrap-up starts (first act) | `rename-session STATE=closing` |
-| Wrap-up ends, something due later | `rename-session STATE=parked WHEN=<time>` |
+| Wrap-up ends, something due later | `rename-session STATE=parked WHEN=<date>` |
 | Wrap-up ends, user has a follow-up | `rename-session STATE=waiting NEED=<what>` |
 | Wrap-up ends, nothing left | `rename-session STATE=done` |
 | Planning ends and building starts | `rename-session` |

@@ -23,7 +23,7 @@ Run shell commands one at a time, each a single static command: no `$(...)` or b
 
 For `gh`, always pass `--repo <owner>/<repo>` as a literal. Take it from the config's `## Issues` section; failing that, run `gh repo view --json nameWithOwner` once, on its own, and reuse the answer. The snippets below are shapes to follow, with `<placeholders>` you fill in.
 
-**Session title.** If the `rename-session` skill is installed, call it as the very first act (`rename-session STATE=closing`, before the summary) and as the last act, once everything has landed (`STATE=done`, `STATE=parked WHEN=<time>` or `STATE=waiting NEED=<what>`). Skip silently if it isn't there.
+**Session title.** If the `rename-session` skill is installed, call it as the very first act (`rename-session STATE=closing`, before the summary) and as the last act, once everything has landed (`STATE=done`, `STATE=parked WHEN=<date>` or `STATE=waiting NEED=<what>`). Skip silently if it isn't there.
 
 ---
 

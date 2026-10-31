@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grill session</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fbfbfa;--fg:#1d2024;--mut:#667;--card:#fff;--line:#dcdde0;--code:#f1f2f4;--acc:#2b6cb0;--ok:#2f855a;--warn:#b7791f;--bad:#c53030}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1e26;--fg:#d6d9e3;--mut:#8b90a3;--card:#232733;--line:#333949;--code:#171a21;--acc:#7cb7ff;--ok:#68d391;--warn:#f6ad55;--bad:#fc8181}}
+:root[data-theme="dark"]{--bg:#1b1e26;--fg:#d6d9e3;--mut:#8b90a3;--card:#232733;--line:#333949;--code:#171a21;--acc:#7cb7ff;--ok:#68d391;--warn:#f6ad55;--bad:#fc8181}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:980px;margin:0 auto;padding:28px 18px 48px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:15px;margin:26px 0 10px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.sub{color:var(--mut);margin:0}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:13px}
+.tree{border:1px solid var(--line);background:var(--card);border-radius:8px}
+.row{display:flex;gap:10px;align-items:baseline;padding:8px 14px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.id{color:var(--mut);min-width:34px;flex:none}
+.body{flex:1;min-width:0}
+.ans{color:var(--mut);font-size:13px;margin-top:2px}
+.pill{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--mut);white-space:nowrap}
+.row.settled .pill{color:var(--ok);border-color:var(--ok)}
+.row.revised .pill{color:var(--warn);border-color:var(--warn)}
+.row.cur{background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.row.cur .pill{color:var(--acc);border-color:var(--acc)}
+.q{border:1px solid var(--acc);background:var(--card);border-radius:8px;padding:14px}
+.q p{margin:0 0 12px}
+.qh{font-weight:700;color:var(--acc);margin-bottom:8px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.opt{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--card)}
+.opt.rec{border-color:var(--ok)}
+.tag{font-size:12px;color:var(--ok);font-weight:700}
+.opt h3{margin:0 0 8px;font-size:14px}
+pre{margin:0 0 8px;background:var(--code);border-radius:6px;padding:10px;font-size:12px;line-height:1.45;overflow-x:auto}
+.why{font-size:13px;color:var(--mut);margin:0}
+table{width:100%;border-collapse:collapse;font-size:13px;display:block;overflow-x:auto}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:400}
+.warn{border:1px solid var(--bad);color:var(--bad);border-radius:8px;padding:10px 14px;margin:14px 0}
+ul.fu{margin:8px 0 0;padding-left:20px}
+</style></head><body><main>
+<h1 id="t"></h1>
+<p class="sub" id="sub"></p>
+<div id="warn"></div>
+<h2>Decision tree</h2>
+<div class="tree" id="tree"></div>
+<div id="main"></div>
+</main>
+<script>
+/*DATA*/
+const GRILL = {
+  title: "Example grill",
+  subtitle: "One question at a time. Each has a recommended answer, so \"yes\" is a valid reply.",
+  current: "D2",
+  decisions: [
+    {id:"D1", title:"Example settled decision", status:"settled", answer:"What was agreed, in one line.", parent:null},
+    {id:"D2", title:"Example open decision", status:"open", answer:"", parent:null},
+    {id:"D3", title:"Example child of D2", status:"pending", answer:"", parent:"D2"}
+  ],
+  question: {
+    id: "D2",
+    prompt: "The question, in one or two sentences.",
+    html: "<div class='opts'><div class='opt rec'><span class='tag'>RECOMMENDED</span><h3>A. Recommended option</h3><pre>small diagram or example</pre><p class='why'>Why this one.</p></div><div class='opt'><h3>B. Alternative</h3><p class='why'>Trade-off.</p></div></div>"
+  },
+  followups: []
+};
+/*END*/
+(function(){
+  var g = GRILL, byId = {}, problems = [];
+  g.decisions.forEach(function(d){
+    if (byId[d.id]) problems.push("Duplicate id " + d.id);
+    byId[d.id] = d;
+  });
+  g.decisions.forEach(function(d){
+    if (d.parent && !byId[d.parent]) problems.push(d.id + " has unknown parent " + d.parent);
+    if ((d.status === "settled" || d.status === "revised") && !d.answer) problems.push(d.id + " is settled with no answer");
+  });
+  if (g.current && !byId[g.current]) problems.push("current " + g.current + " is not in decisions");
+  if (g.current && g.question && g.question.id !== g.current) problems.push("question id " + g.question.id + " does not match current " + g.current);
+  if (g.current && byId[g.current] && byId[g.current].status === "settled") problems.push("current " + g.current + " is already settled");
+
+  function depth(d){ var n = 0; while (d.parent && byId[d.parent]) { d = byId[d.parent]; n++; if (n > 8) break; } return n; }
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  document.getElementById("t").textContent = g.title;
+  document.title = g.title;
+  document.getElementById("sub").textContent = g.subtitle || "";
+
+  var tree = document.getElementById("tree");
+  g.decisions.forEach(function(d){
+    var state = d.id === g.current ? "cur" : d.status;
+    var row = el("div", "row " + state);
+    row.style.paddingLeft = (14 + depth(d) * 20) + "px";
+    row.appendChild(el("span", "id", d.id));
+    var body = el("div", "body");
+    body.appendChild(el("div", "", d.title));
+    if (d.answer && d.id !== g.current) body.appendChild(el("div", "ans", d.answer));
+    row.appendChild(body);
+    row.appendChild(el("span", "pill", d.id === g.current ? "asking now" : d.status));
+    tree.appendChild(row);
+  });
+
+  var main = document.getElementById("main");
+  if (g.current && byId[g.current]) {
+    var d = byId[g.current];
+    main.appendChild(el("h2", "", "Question"));
+    var q = el("div", "q");
+    q.appendChild(el("div", "qh", d.id + " \u00b7 " + d.title));
+    q.appendChild(el("p", "", g.question ? g.question.prompt : ""));
+    var holder = el("div");
+    holder.innerHTML = g.question ? g.question.html : "";
+    q.appendChild(holder);
+    main.appendChild(q);
+  } else {
+    main.appendChild(el("h2", "", "Agreed design"));
+    var tbl = el("table");
+    var head = el("tr"); ["ID", "Decision", "Answer"].forEach(function(h){ head.appendChild(el("th", "", h)); });
+    tbl.appendChild(head);
+    g.decisions.forEach(function(d){
+      var r = el("tr");
+      r.appendChild(el("td", "", d.id)); r.appendChild(el("td", "", d.title)); r.appendChild(el("td", "", d.answer));
+      tbl.appendChild(r);
+    });
+    main.appendChild(tbl);
+    if (g.followups && g.followups.length) {
+      main.appendChild(el("h2", "", "Open follow-ups"));
+      var ul = el("ul", "fu");
+      g.followups.forEach(function(f){ ul.appendChild(el("li", "", f)); });
+      main.appendChild(ul);
+    }
+  }
+
+  if (problems.length) {
+    var w = el("div", "warn", "Page data problem: " + problems.join("; "));
+    document.getElementById("warn").appendChild(w);
+  }
+})();
+</script></body></html>

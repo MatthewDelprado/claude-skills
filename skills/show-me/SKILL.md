@@ -1,6 +1,6 @@
 ---
 name: show-me
-description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me visually", "explain this visually", "draw this as a diagram", "diagram this flow", "diagram this system", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for showing file contents, diffs, logs or command output, and not for data charts or dashboards (the dataviz skill covers those when installed).
+description: Explain something visually in chat — flowcharts, sequence diagrams, ERDs, architecture, interactive explainers. Picks the right diagram form, renders it so it actually displays inline, and offers to install the right connector when the tool for the job is missing. Trigger on "show me" whenever the thing to show is a process, flow, system, architecture, relationship or how something works (e.g. "show me how this works", "show me the flow", "show me how these pieces connect"), and on "show me visually", "explain this visually", "draw this as a diagram", "diagram this flow", "diagram this system", "visualize this as a diagram", "visualise this as a diagram", "map this out visually". Not for "show me" when the thing is a file's contents, code, a function, a config, a diff, logs or command output (just display those), and not for data charts or dashboards (the dataviz skill covers those when installed).
 ---
 
 # Show me
@@ -39,6 +39,7 @@ mermaid.initialize({
   startOnLoad: false,
   theme: 'base',
   fontFamily: '"anthropic-sans", sans-serif',
+  flowchart: { padding: 24, nodeSpacing: 40, rankSpacing: 50 },
   themeVariables: {
     darkMode: dark,
     fontSize: '13px',
@@ -56,6 +57,7 @@ document.getElementById('d').innerHTML = svg;
 Mermaid tips:
 - Quote every node label (`a["like this"]`) and use `<br/>` for line breaks.
 - Don't use `classDef` colours; the base theme already follows light and dark mode.
+- The `flowchart.padding` setting stops node and edge labels being clipped: boxes are measured in a narrower font than the one that draws the text. Keep it.
 - Give each widget a unique render id (`fc-svg`, `sq-svg`) if you draw more than one.
 
 If you must use the connector anyway (for example, to validate syntax), never read its result. It lands in a saved file; if `jq` is available, check `jq '.valid'` on that file and stop there, otherwise treat the diagram as unvalidated and render it with `show_widget`.

@@ -1,6 +1,6 @@
 ---
 name: afk
-description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. Then give a full report of what happened, and walk the user through each open decision one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "I'll be away", "work while I'm gone", "don't wait for me", "keep going without me".
+description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. Then give a full report of what happened, and walk the user through each open decision one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday").
 ---
 
 # afk
@@ -47,7 +47,7 @@ Context will be summarised on a long run. Keep a running log file so nothing get
 - **Queued:** the exact command, draft or diff that's waiting for approval.
 - **Dead end:** what you tried and why it failed, so nobody tries it again.
 
-Re-read the log after any context summary before carrying on.
+After any context summary, re-read the log and re-apply the `afk` rename before carrying on.
 
 ## 3. Hard lines while away
 

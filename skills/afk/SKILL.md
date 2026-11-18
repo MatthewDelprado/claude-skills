@@ -1,6 +1,6 @@
 ---
 name: afk
-description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. Then give a full report of what happened, and walk the user through each open decision one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday"), or on the word used in passing ("what does afk mean").
+description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. When the run ends, give a full report of what happened and walk the user through that run's open decisions one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday"), or on the word used in passing ("what does afk mean").
 ---
 
 # afk
@@ -39,7 +39,7 @@ Verify what you build (run it, test it). The report must say what's verified and
 
 ## 2. Keep a log that survives
 
-Context will be summarised on a long run. Keep a running log file so nothing gets lost: in the scratchpad if the session has one, otherwise `$TMPDIR/afk/<topic>-<YYYY-MM-DD>.md`. Append as you go, not at the end:
+Context will be summarised on a long run. Keep a running log file so nothing gets lost: in the scratchpad if the session has one, otherwise `${TMPDIR:-/tmp}/afk/<topic>-<YYYY-MM-DD>.md`. Append as you go, not at the end:
 
 - **Done:** what changed, where it lives (branch, path, commit), and whether it's verified.
 - **Assumption:** what you picked, what you didn't pick, and how to flip it.

@@ -16,9 +16,9 @@ Send one short message, then start work without waiting:
 - **Goal:** the outcome you're working toward, in one line. Take it from the user's message and the session so far. If neither gives a concrete task, don't go afk: say there's nothing to work on, and stop.
 - **Log:** where the running log lives (see §2).
 - **Hard lines:** what you won't do without them (see §3).
-- **Prompt warning:** if the permission mode will stop on tool approvals, put this first, so they see it before leaving. A prompt stalls the run just as a question would. Start anyway: an approval they find on return still lets the run continue.
+- **Prompt warning:** if the permission mode will stop on tool approvals, put this first and suggest switching to a mode that won't prompt before they leave. A prompt stalls the run just as a question would. Start anyway: an approval they find on return still lets the run continue.
 
-If `rename-session` is installed, call `rename-session STATE=working`. It has no mode parameter and takes the mode from what the session is doing, so the mode segment must come out as `afk`.
+If `rename-session` is installed, call `rename-session STATE=working`, and when you build the title, use `afk` as the mode segment.
 
 ## 1. Never ask, decide
 
@@ -33,7 +33,7 @@ From here until §5, don't ask the user anything and don't end your turn to wait
 
 Standing instructions the user already gave (CLAUDE.md, memory, this repo's config) still apply, and they count as approval for what they cover.
 
-Run independent work in parallel with subagents where available. While waiting on a long build or job, do other work. If nothing else is left, wait in the background rather than ending the turn.
+Run independent work in parallel with subagents where available. While waiting on a long build or job, do other work. If nothing else is left, wait in the background rather than ending the turn, for up to an hour per wait. Past that, log the item as blocked and leave it for the report.
 
 Verify what you build (run it, test it). The report must say what's verified and what isn't.
 
@@ -51,7 +51,7 @@ After any context summary, re-read the log and re-apply the `afk` rename before 
 
 ## 3. Hard lines while away
 
-Unless `.claude/afk.md` or the user's standing instructions say otherwise, never do these while afk. Queue them instead:
+Unless `.claude/afk.md` or the user's standing instructions say otherwise (a CLAUDE.md that says to push work branches does override the first line), never do these while afk. Queue them instead:
 
 - Push, merge, force-push, or open or merge a PR.
 - Send, post or comment anywhere outward (messages, issues, PRs, email). The one exception is the push notification to the user in §5.

@@ -13,12 +13,12 @@ Works in any repo. A repo can override the hard lines below with `.claude/afk.md
 
 Send one short message, then start work without waiting:
 
-- **Goal:** the outcome you're working toward, in one line. Take it from the user's message and the session so far.
+- **Goal:** the outcome you're working toward, in one line. Take it from the user's message and the session so far. If neither gives a concrete task, don't go afk: say there's nothing to work on, and stop.
 - **Log:** where the running log lives (see §2).
 - **Hard lines:** what you won't do without them (see §3).
 - **Prompt warning:** if the permission mode will stop on tool approvals, say so. A prompt stalls the run just as a question would.
 
-If `rename-session` is installed, rename with mode `afk`.
+If `rename-session` is installed, call `rename-session STATE=working` with `afk` as the mode segment.
 
 ## 1. Never ask, decide
 
@@ -54,7 +54,7 @@ After any context summary, re-read the log and re-apply the `afk` rename before 
 Unless `.claude/afk.md` or the user's standing instructions say otherwise, never do these while afk. Queue them instead:
 
 - Push, merge, force-push, or open or merge a PR.
-- Send, post or comment anywhere outward (messages, issues, PRs, email).
+- Send, post or comment anywhere outward (messages, issues, PRs, email). The one exception is the push notification to the user in §5.
 - Deploy, publish, or change production, accounts, settings or money.
 - Delete anything you didn't create in this run.
 

@@ -14,7 +14,7 @@ Proposals from Step 6 runs. Each `## ` heading is one theme; add new evidence to
 
 ## Setup run from a side session lands the config on a side branch
 
-**Seen:** 2026-11-18 (plantberg, commit abe3d90 on `claude/save-and-templates-e6209b`). Close-out ran in a side session: a worktree on its own branch, started by an orchestrator session that merges on the user's word. The repo had no `.claude/close-out.md`, so setup ran its full interview there. The new config was committed only to that side branch. Until the orchestrator merges it, other sessions (the main checkout, other side sessions) see no config and would run setup again, possibly with different answers.
+**Seen:** 2026-11-18, in a work repo. Close-out ran in a side session: a worktree on its own branch, started by an orchestrator session that merges on the user's word. The repo had no `.claude/close-out.md`, so setup ran its full interview there. The new config was committed only to that side branch. Until the orchestrator merges it, other sessions (the main checkout, other side sessions) see no config and would run setup again, possibly with different answers.
 
 **Proposal:** add to `setup.md`, before step 3 ("Ask"):
 

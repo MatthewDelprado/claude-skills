@@ -33,7 +33,7 @@ From here until §5, don't ask the user anything and don't end your turn to wait
 
 Standing instructions the user already gave (CLAUDE.md, memory, this repo's config) still apply, and they count as approval for what they cover.
 
-Run independent work in parallel with subagents where available. While waiting on a long build or job, do other work. If nothing else is left, wait in the background rather than ending the turn, for up to an hour per wait. Past that, log the item as blocked and leave it for the report.
+Run independent work in parallel with subagents where available. While waiting on a long build or job, do other work. If nothing else is left, wait in the background rather than ending the turn, for up to an hour per wait. Past that, log it as **queued** (what it's waiting on) and leave it for the report.
 
 Verify what you build (run it, test it). The report must say what's verified and what isn't.
 

@@ -1,6 +1,6 @@
 ---
 name: afk
-description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. Then give a full report of what happened, and walk the user through each open decision one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday").
+description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. Then give a full report of what happened, and walk the user through each open decision one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday"), or on the word used in passing ("what does afk mean").
 ---
 
 # afk
@@ -16,9 +16,9 @@ Send one short message, then start work without waiting:
 - **Goal:** the outcome you're working toward, in one line. Take it from the user's message and the session so far. If neither gives a concrete task, don't go afk: say there's nothing to work on, and stop.
 - **Log:** where the running log lives (see §2).
 - **Hard lines:** what you won't do without them (see §3).
-- **Prompt warning:** if the permission mode will stop on tool approvals, say so. A prompt stalls the run just as a question would.
+- **Prompt warning:** if the permission mode will stop on tool approvals, put this first, so they see it before leaving. A prompt stalls the run just as a question would. Start anyway: an approval they find on return still lets the run continue.
 
-If `rename-session` is installed, call `rename-session STATE=working` with `afk` as the mode segment.
+If `rename-session` is installed, call `rename-session STATE=working`. It has no mode parameter and takes the mode from what the session is doing, so the mode segment must come out as `afk`.
 
 ## 1. Never ask, decide
 

@@ -29,7 +29,7 @@ Works in any repo. Optional companions, used only if installed: `rename-session`
 | "what's left on the retry policy stuff" | `SCOPE="retry policy"` |
 | "what's next across everything" | `SCOPE=all` — widen past this session: open GitHub issues, plus any task list or notes file the repo keeps |
 
-**Skill-to-skill:** a planning, grilling or feature skill can hand off with `whats-next SCOPE="<topic>"` once design is settled and only execution remains.
+**Skill-to-skill:** `afk` hands off here once its decision walk is done. A planning, grilling or feature skill can also hand off with `whats-next SCOPE="<topic>"` once design is settled and only execution remains.
 
 ---
 

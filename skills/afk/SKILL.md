@@ -31,9 +31,9 @@ From here until §5, don't ask the user anything and don't end your turn to wait
 | Shapes later work, and you can't tell what they'd want | **Build variants**: 2–3 versions side by side (a branch or worktree each for code, or `-a`/`-b`/`-c` files for docs and designs). Carry the main line on your pick and log it as a **decision** for their return. |
 | Needs them (a credential, an approval, a physical check, a hard line) | Prepare everything up to the edge, log it as **queued**, and switch to other work. |
 
-Standing instructions the user already gave (CLAUDE.md, memory, this repo's config) still apply, and they count as approval for what they cover.
+Standing instructions the user already gave (CLAUDE.md, memory, this repo's config) still apply. They lift a hard line in §3 only where they name that action outright.
 
-Run independent work in parallel with subagents where available. While waiting on a long build or job, do other work. If nothing else is left, wait in the background rather than ending the turn, for up to an hour per wait. Past that, log it as **queued** (what it's waiting on) and leave it for the report.
+Run independent work in parallel with subagents where available. While waiting on a long build or job, do other work. If nothing else is left, wait in the background rather than ending the turn, for up to an hour per wait. Past that, or if there's no way to wait without ending the turn, log it as **queued** (what it's waiting on) and leave it for the report.
 
 Verify what you build (run it, test it). The report must say what's verified and what isn't.
 
@@ -51,7 +51,7 @@ After any context summary, re-read the log and re-apply the `afk` rename before 
 
 ## 3. Hard lines while away
 
-Unless `.claude/afk.md` or the user's standing instructions say otherwise (only an instruction that names pushing outright, such as "push work branches", overrides the first line), never do these while afk. Queue them instead:
+Unless `.claude/afk.md` or a standing instruction names the action outright, never do these while afk. Each action is lifted alone: "push work branches" allows pushing a work branch, not opening a PR. Queue them instead:
 
 - Push, merge, force-push, or open or merge a PR.
 - Send, post or comment anywhere outward (messages, issues, PRs, email).
@@ -79,7 +79,7 @@ Don't stop because the work feels long, and don't stop to report part-way.
 When you're truly out of options:
 
 1. If a push-notification tool is available, send one line: "afk done: N decisions waiting".
-2. If `rename-session` is installed: `rename-session STATE=waiting NEED="<N> afk decisions"`.
+2. If `rename-session` is installed: `rename-session STATE=waiting NEED="answer afk decisions"`.
 3. **The report.** Write the full report using `references/return-report.md`. If an Artifact tool can publish it as a page only the user can see (readable on a phone), do that. Never publish it anywhere shared or public: otherwise write it next to the log. Put the headline and the link in chat.
 4. **The decisions, one per turn.** In the same message as the report, start the walk: the first decision, with its catch-up card from `references/return-report.md`. Order: blockers first, then decisions with variants, then queued actions, then any assumption worth a second look. After each answer, act on it (merge the chosen variant, delete the others, run the queued command once they've seen it), then show the next card.
 

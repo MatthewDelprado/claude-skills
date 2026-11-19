@@ -51,7 +51,7 @@ After any context summary, re-read the log and re-apply the `afk` rename before 
 
 ## 3. Hard lines while away
 
-Unless `.claude/afk.md` or the user's standing instructions say otherwise (a CLAUDE.md that says to push work branches does override the first line), never do these while afk. Queue them instead:
+Unless `.claude/afk.md` or the user's standing instructions say otherwise (only an instruction that names pushing outright, such as "push work branches", overrides the first line), never do these while afk. Queue them instead:
 
 - Push, merge, force-push, or open or merge a PR.
 - Send, post or comment anywhere outward (messages, issues, PRs, email).

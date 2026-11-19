@@ -1,6 +1,6 @@
 ---
 name: squint
-description: Design-craft review of a UI. Squints at a screenshot, page, design frame or running app, says plainly what's off, asks about the judgement calls, and suggests one small thing to try. Its rules live in references/rules.md and grow from the user's own calls over time. Trigger on "squint", "/squint", "give it a squint", "squint at this", "design crit", "critique this design", "critique this UI". Not for code review, PR review or a general "what do you think"; not for building a screen (mock-up does that).
+description: Design-craft review of a UI. Squints at a screenshot, page, design frame or running app, says plainly what's off, asks about the judgement calls, and suggests one small thing to try. Its rules live in references/rules.md and grow from the user's own calls over time. Trigger on "squint", "/squint", "give it a squint", "squint at this", "design crit", "critique this UI", "critique this screen". Not for critiquing a design doc or plan (grill-me), code review, PR review, a general "what do you think", or the word "squint" in passing; not for building a screen (mock-up does that).
 ---
 
 # squint

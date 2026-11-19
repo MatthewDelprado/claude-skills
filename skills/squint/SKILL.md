@@ -35,7 +35,7 @@ Say what you assumed: viewport, scale, data state. If the CSS is in the repo, wo
 2. **Squint pass.** What reads first, second, third, and whether that's right.
 3. **Walk the rules.** Go through `references/rules.md` (and `.claude/squint.md` if present) silently. Keep only what would most change the next version, starting with whatever stops someone reading or using the screen. At most five **Off** and three **Ask**.
 4. **Render.** For each Off, inject the fix into the running page (CSS, a small DOM move, or a patched module served through request interception) and capture the same region before and after. For each Ask, render two or three candidates. For the **Try**, render all the Off fixes together. Recipe in `references/artifact.md`.
-5. **Publish** one review page from `references/template.html` (the Artifact tool; load its design guidance first). Recipe and page contract in `references/artifact.md`.
+5. **Publish** one review page from `references/template.html` (the Artifact tool; load its design guidance first). Recipe and page contract in `references/artifact.md`. The page is private to the user. If the captures show real personal or customer data or secrets, ask before publishing and offer the local file instead.
 6. **Reply** in chat with the link and the shape below, short. The page carries the detail.
 
 ## Reply
@@ -48,11 +48,11 @@ Say what you assumed: viewport, scale, data state. If the CSS is in the repo, wo
 **Review page:** <link>. Pick fixes and options there, then say "apply the squint picks".
 ```
 
-Without an Artifact tool, write the page as an HTML file in the repo's scratch area and send it, or fall back to the same shape in chat with the image paths.
+Without an Artifact tool, write the page to `${TMPDIR:-/tmp}/squint/`, never into the repo (it can be megabytes of images), and send it, or fall back to the same shape in chat with the image paths.
 
 ## After the user picks
 
-Read the page's picks back with `ArtifactData` (`list` on the `picks` collection). Then:
+Read the page's picks back with `ArtifactData` (`list` on the `picks` collection). Without `ArtifactData` or the page's `db`, ask the user to say their picks in chat. Then:
 
 - **Fix it**: apply that fix in code as rendered, and run the repo's own checks.
 - **It's on purpose**: an overruled finding. Follow it for the session and offer to log it (below).

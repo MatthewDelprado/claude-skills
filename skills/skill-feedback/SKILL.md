@@ -9,8 +9,8 @@ Turn a moment where a skill got it wrong, or got it right in a way worth keeping
 
 ## Steps
 
-1. **Gather.** Skill name, which view or choice it made, the user's prompt, the user's own words on what went wrong, what they expected if they said, the name of the repo they were working in, and which signal fired (`redirect`, `trim`, `no fit`, `guessed`, `bad hand-off`, `user-reported`, or for `squint` `new rule` / `overruled`). For a squint rule, paraphrase it generically under What went wrong, with no workplace, product, brand or client names: the issue is public as soon as it's filed.
-2. **Leave code out.** No code, file contents or file paths from the session. The issue may be read outside the work repo. If the prompt contained code, paraphrase it.
+1. **Gather.** Skill name, which view or choice it made, the user's prompt, the user's own words on what went wrong, what they expected if they said, the kind of repo they were working in ("a work web app", "a personal iOS app"), and which signal fired (`redirect`, `trim`, `no fit`, `guessed`, `bad hand-off`, `user-reported`, or for `squint` `new rule` / `overruled`). For a squint rule, word the rule itself generically under What went wrong.
+2. **Leave code and names out.** No code, file contents or file paths from the session, and no workplace, product, brand, client or repo names: the issue is public as soon as it's filed. If the prompt or the user's words held any of these, paraphrase them.
 3. **Check for a duplicate.** `gh issue list -R MatthewDelprado/claude-skills -l <skill> --state open -S "<keywords>"`. If a close match exists, offer to add a comment to it instead of a new issue.
 4. **Draft and show it.** Title is short and specific ("explain-code: call tree too deep for a two-step flow"). Body:
 
@@ -20,7 +20,7 @@ Chosen: call tree
 Prompt: <the user's prompt, paraphrased if it held code>
 What went wrong: <the user's words>
 Expected: <what they wanted, if they said>
-Repo: <working repo name>
+Context: <the kind of repo, never its name>
 Signal: <redirect | trim | no fit | guessed | bad hand-off | user-reported | new rule | overruled>
 ```
 

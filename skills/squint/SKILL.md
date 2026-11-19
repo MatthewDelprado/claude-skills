@@ -63,6 +63,7 @@ At most five in **Off** and three in **Ask**, most important first. Drop any sec
 - When the user overrules a finding ("that's on purpose", "don't flag that") or states a preference ("we always…"), follow it for the rest of the session. Offer once per session: "Log that as a squint rule? (skill-feedback)". It's filed with the signal `new rule` or `overruled`.
 - `skill-review squint` folds those issues into `references/rules.md`. A rule the user stated outright needs only one issue.
 - A preference that belongs to one repo goes in that repo's `.claude/squint.md` instead.
+- Logged rules land in a public repo. Write them generically: no workplace, product, brand or client names.
 
 ## Related skills
 

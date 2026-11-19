@@ -52,7 +52,7 @@ for s in rename-session close-out whats-next bro show-me explain-code mock-up sq
 
 ## Feedback loop
 
-When `explain-code` or `mock-up` gets it wrong (you asked for a different view, trimmed the output, or it had to guess), it ends with one line offering to log it, at most once per session. Say yes and `skill-feedback` drafts a GitHub issue on this repo for you to confirm. Run `/skill-review <skill>` now and then: it groups the open issues, changes a skill only where two or more agree, and opens a PR that must not grow the skill. You review and merge.
+When `explain-code` or `mock-up` gets it wrong (you asked for a different view, trimmed the output, or it had to guess), it ends with one line offering to log it, at most once per session. `squint` does the same when you overrule a finding or state a design rule, and `skill-review` adds a rule you stated outright from a single issue. Say yes and `skill-feedback` drafts a GitHub issue on this repo for you to confirm. Run `/skill-review <skill>` now and then: it groups the open issues, changes a skill only where two or more agree, and opens a PR that must not grow the skill. You review and merge.
 
 ## Adding things
 

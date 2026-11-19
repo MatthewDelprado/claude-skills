@@ -1,6 +1,6 @@
 ---
 name: explain-code
-description: Explain code, a code flow, a refactor or a change in chat, using the smallest view that makes the point: pseudocode, call tree, component tree, file tree, small Mermaid diagram, or diff. Use for "sketch the flow", "draw the call tree", "what would change", "walk me through this code". For flowcharts, sequence diagrams, ERDs or architecture pictures rendered inline, use show-me instead. For how a screen should look, use mock-up.
+description: Explain code, a code flow, a refactor or a change in chat, using the smallest view that makes the point: pseudocode, call tree, component tree, file tree, small Mermaid diagram, or diff. Use for "sketch the flow", "draw the call tree", "what would change", "walk me through this code". For flowcharts, sequence diagrams, ERDs or architecture pictures rendered inline, use show-me instead. A plain "show me" about how code works is yours unless they ask for a diagram. For how a screen should look, use mock-up.
 ---
 
 Help the user understand the current topic visually. Skip the preamble and keep prose brief. Pick the smallest view that makes the key point clear. One view is usual, two is fine, more is rare.

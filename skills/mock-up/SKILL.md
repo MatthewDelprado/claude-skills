@@ -34,6 +34,7 @@ The file lives in a temp folder. If the user wants to show someone, copy it wher
 
 - The question is about logic, flow or code structure, not how it looks: use `explain-code`.
 - Something here was wrong or missing: `skill-feedback` logs it.
+- The user wants an existing screen critiqued, not built: use `squint`. It hands its suggested experiment back here to render.
 
 ## Feedback
 

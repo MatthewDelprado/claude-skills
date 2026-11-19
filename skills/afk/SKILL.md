@@ -1,6 +1,6 @@
 ---
 name: afk
-description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. When the run ends, give a full report of what happened and walk the user through that run's open decisions one at a time, with a short catch-up before each one. Trigger on "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday"), or on the word used in passing ("what does afk mean").
+description: Work unattended while the user is away. Never stop to ask: pick a recommended default and log it, or build several versions when the direction is unclear, and keep going until every remaining item truly needs the user. When the run ends, give a full report of what happened and walk the user through that run's open decisions one at a time, with a short catch-up before each one. Trigger only when the message asks to go afk: "afk", "/afk", "going afk", "work while I'm gone". Do not trigger on a mention of being away that isn't a request to keep working ("I'll be away Friday"), or on the word used in passing ("what does afk mean").
 ---
 
 # afk
@@ -39,7 +39,7 @@ Verify what you build (run it, test it). The report must say what's verified and
 
 ## 2. Keep a log that survives
 
-Context will be summarised on a long run. Keep a running log file so nothing gets lost: in the scratchpad if the session has one, otherwise `${TMPDIR:-/tmp}/afk/<topic>-<YYYY-MM-DD>.md`. Append as you go, not at the end:
+Context will be summarised on a long run. Keep a running log file so nothing gets lost: in the scratchpad if the session has one, otherwise `${TMPDIR:-/tmp}/afk/<topic>-<YYYY-MM-DD>.md`, in a folder only the user can read (`mkdir -m 700`). Append as you go, not at the end:
 
 - **Done:** what changed, where it lives (branch, path, commit), and whether it's verified.
 - **Assumption:** what you picked, what you didn't pick, and how to flip it.
@@ -80,7 +80,7 @@ When you're truly out of options:
 
 1. If a push-notification tool is available, send one line: "afk done: N decisions waiting".
 2. If `rename-session` is installed: `rename-session STATE=waiting NEED="<N> afk decisions"`.
-3. **The report.** Write the full report using `references/return-report.md`. Publish it as a page if an Artifact tool is available (readable on a phone), otherwise write it next to the log. Put the headline and the link in chat.
+3. **The report.** Write the full report using `references/return-report.md`. If an Artifact tool can publish it as a page only the user can see (readable on a phone), do that. Never publish it anywhere shared or public: otherwise write it next to the log. Put the headline and the link in chat.
 4. **The decisions, one per turn.** In the same message as the report, start the walk: the first decision, with its catch-up card from `references/return-report.md`. Order: blockers first, then decisions with variants, then queued actions, then any assumption worth a second look. After each answer, act on it (merge the chosen variant, delete the others, run the queued command once they've seen it), then show the next card.
 
 Each card resets the context from scratch. Assume they remember nothing of this run, so don't say "as above".

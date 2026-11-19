@@ -54,11 +54,13 @@ After any context summary, re-read the log and re-apply the `afk` rename before 
 Unless `.claude/afk.md` or the user's standing instructions say otherwise (a CLAUDE.md that says to push work branches does override the first line), never do these while afk. Queue them instead:
 
 - Push, merge, force-push, or open or merge a PR.
-- Send, post or comment anywhere outward (messages, issues, PRs, email). The one exception is the push notification to the user in §5.
+- Send, post or comment anywhere outward (messages, issues, PRs, email).
 - Deploy, publish, or change production, accounts, settings or money.
 - Delete anything you didn't create in this run.
 
-Local commits on a work branch are fine. Keep `main` (or the default branch) untouched.
+The only exceptions are the two in §5: the push notification to the user and the private report page.
+
+Local commits on a work branch are fine. If you're on `main` (or the default branch), create a work branch before the first commit, and keep the default branch untouched.
 
 ## 4. Exhausted means exhausted
 

@@ -13,11 +13,12 @@ Personal Claude Code skills that work in any repo. No repo-specific paths or too
 | [`show-me`](skills/show-me/SKILL.md) | Explains something visually in chat: picks the right diagram form, renders Mermaid through `show_widget` (the Mermaid connector's output is too large to display), and offers to install the right connector when the render tool is missing. Trigger: "show me" about a system, process or relationship, "show me visually", "draw this as a diagram", "diagram this flow", "diagram this system", "visualize this as a diagram". |
 | [`explain-code`](skills/explain-code/SKILL.md) | Explains code, a code flow, a refactor or a change in chat with the smallest useful view: pseudocode, call tree, component tree, file tree, small Mermaid diagram, or diff. Trigger: "sketch the flow", "draw the call tree", "what would change". |
 | [`mock-up`](skills/mock-up/SKILL.md) | Builds a throwaway HTML preview of a UI idea in the current repo's own look and feel. Trigger: "mock this up", "what would this look like". |
+| [`squint`](skills/squint/SKILL.md) | Design-craft review of a UI: squints at a screenshot, page or running app, says what's clearly off, asks about the judgement calls and suggests one thing to try, each point tagged with a rule ID. The rules start in `references/rules.md` and grow from your own calls; a repo can add its own in `.claude/squint.md`. Trigger: "squint", "give it a squint", "design crit". |
 | [`grill-me`](skills/grill-me/SKILL.md) | Interviews you about a plan one question at a time, with a live decision-tree page that keeps IDs stable. Trigger: "grill me". |
 | [`skill-feedback`](skills/skill-feedback/SKILL.md) | Logs feedback on a skill as a GitHub issue on this repo. It drafts the issue and you confirm before anything is filed. |
 | [`skill-review`](skills/skill-review/SKILL.md) | Reads the open feedback issues for a skill and opens a PR with proposed edits. You review and merge. Trigger: `/skill-review <skill>`. |
 
-`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone, and `bro` and `show-me` stand alone. `explain-code` and `mock-up` name each other and `show-me`, and offer a one-line `skill-feedback` prompt when a skill gets it wrong; `skill-review` turns the accumulated issues into a PR.
+`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone, and `bro` and `show-me` stand alone. `explain-code` and `mock-up` name each other and `show-me`, and offer a one-line `skill-feedback` prompt when a skill gets it wrong; `skill-review` turns the accumulated issues into a PR. `squint` hands its suggested experiment to `mock-up` to render, and logs new rules through `skill-feedback`.
 
 ## Install
 
@@ -28,7 +29,7 @@ As a plugin (recommended; works on any machine, updates itself):
 /plugin install dp@dp-skills
 ```
 
-Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`, `dp:show-me`, `dp:explain-code`, `dp:mock-up`, `dp:grill-me`, `dp:skill-feedback`, `dp:skill-review`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`, `dp:show-me`, `dp:explain-code`, `dp:mock-up`, `dp:squint`, `dp:grill-me`, `dp:skill-feedback`, `dp:skill-review`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
 
 The plugin has no `version` on purpose, so every push to `main` counts as an update.
 
@@ -40,7 +41,7 @@ If a machine's admin settings block third-party marketplaces, fall back to symli
 
 ```bash
 gh repo clone MatthewDelprado/claude-skills ~/.claude/claude-skills
-for s in rename-session close-out whats-next bro show-me explain-code mock-up grill-me skill-feedback skill-review; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
+for s in rename-session close-out whats-next bro show-me explain-code mock-up squint grill-me skill-feedback skill-review; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
 ```
 
 ## Requirements
@@ -51,7 +52,7 @@ for s in rename-session close-out whats-next bro show-me explain-code mock-up gr
 
 ## Feedback loop
 
-When `explain-code` or `mock-up` gets it wrong (you asked for a different view, trimmed the output, or it had to guess), it ends with one line offering to log it, at most once per session. Say yes and `skill-feedback` drafts a GitHub issue on this repo for you to confirm. Run `/skill-review <skill>` now and then: it groups the open issues, changes a skill only where two or more agree, and opens a PR that must not grow the skill. You review and merge.
+When `explain-code` or `mock-up` gets it wrong (you asked for a different view, trimmed the output, or it had to guess), it ends with one line offering to log it, at most once per session. `squint` does the same when you overrule a finding or state a design rule, and `skill-review` adds a rule you stated outright from a single issue. Say yes and `skill-feedback` drafts a GitHub issue on this repo for you to confirm. Run `/skill-review <skill>` now and then: it groups the open issues, changes a skill only where two or more agree, and opens a PR that must not grow the skill. You review and merge.
 
 ## Adding things
 
@@ -74,5 +75,7 @@ scripts/check.py        # layout, frontmatter, size cap, sibling links
 ```
 
 ## Credits
+
+`squint` takes its say-or-ask approach to design critique from Shift Nudge's free design-review skill. Its rules, structure and wording are written independently.
 
 `explain-code` started from humanlayer's `show-me` skill (MIT), trimmed and extended. It was renamed when this repo absorbed the former `Dp-Skills` repo, because this repo already had a different `show-me`.

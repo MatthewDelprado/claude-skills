@@ -9,6 +9,7 @@ Personal Claude Code skills that work in any repo. No repo-specific paths or too
 | [`rename-session`](skills/rename-session/SKILL.md) | Retitles the current session to `<overall work> - <#issue> - <mode> - <specifics>`, with prefixes for *needs you*, *parked until <date>*, *closing out* and *done*. Trigger: `/rename-session`. |
 | [`close-out`](skills/close-out/SKILL.md) | End-of-session cleanup: session summary, commit only this session's work, stale-reference audit, docs and verification check, issue tidy-up, self-improvement proposals. Repo-specific steps come from `.claude/close-out.md`; the first run in a repo interviews you to create it. Trigger: "close out", "wrap up". |
 | [`whats-next`](skills/whats-next/SKILL.md) | Walks you through the remaining work one decision per turn, each with a recommended default, until the session is blocked or done, then hands off to `close-out`. Trigger: "what's next", "what's left". |
+| [`afk`](skills/afk/SKILL.md) | Works unattended while you're away: never stops to ask, picks a default and logs it or builds 2–3 versions when the direction is unclear, and keeps going until every remaining item truly needs you. Then it gives a full report and walks you through each decision one at a time, with a catch-up before each. Trigger: "afk", "work while I'm gone". |
 | [`bro`](skills/bro/SKILL.md) | Makes the last message easier to understand: restates it in plain language with no jargon, tables any options with factors and a recommendation, and opens with a very brief summary (one or two sentences) when the conversation is deep in detail. Trigger: "bro", "wtf". |
 | [`show-me`](skills/show-me/SKILL.md) | Explains something visually in chat: picks the right diagram form, renders Mermaid through `show_widget` (the Mermaid connector's output is too large to display), and offers to install the right connector when the render tool is missing. Trigger: "show me" about a system, process or relationship, "show me visually", "draw this as a diagram", "diagram this flow", "diagram this system", "visualize this as a diagram". |
 | [`explain-code`](skills/explain-code/SKILL.md) | Explains code, a code flow, a refactor or a change in chat with the smallest useful view: pseudocode, call tree, component tree, file tree, small Mermaid diagram, or diff. Trigger: "sketch the flow", "draw the call tree", "what would change". |
@@ -18,7 +19,7 @@ Personal Claude Code skills that work in any repo. No repo-specific paths or too
 | [`skill-feedback`](skills/skill-feedback/SKILL.md) | Logs feedback on a skill as a GitHub issue on this repo. It drafts the issue and you confirm before anything is filed. |
 | [`skill-review`](skills/skill-review/SKILL.md) | Reads the open feedback issues for a skill and opens a PR with proposed edits. You review and merge. Trigger: `/skill-review <skill>`. |
 
-`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. Each works alone, and `bro` and `show-me` stand alone. `explain-code` and `mock-up` name each other and `show-me`, and offer a one-line `skill-feedback` prompt when a skill gets it wrong; `skill-review` turns the accumulated issues into a PR. `squint` hands its suggested experiment to `mock-up` to render, and logs new rules through `skill-feedback`.
+`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. `afk` hands its leftovers to `whats-next` once its decision walk is done. Each works alone, and `bro` and `show-me` stand alone. `explain-code` and `mock-up` name each other and `show-me`, and offer a one-line `skill-feedback` prompt when a skill gets it wrong; `skill-review` turns the accumulated issues into a PR. `squint` hands its suggested experiment to `mock-up` to render, and logs new rules through `skill-feedback`.
 
 ## Install
 
@@ -29,7 +30,7 @@ As a plugin (recommended; works on any machine, updates itself):
 /plugin install dp@dp-skills
 ```
 
-Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:rename-session`, `dp:bro`, `dp:show-me`, `dp:explain-code`, `dp:mock-up`, `dp:squint`, `dp:grill-me`, `dp:skill-feedback`, `dp:skill-review`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:afk`, `dp:rename-session`, `dp:bro`, `dp:show-me`, `dp:explain-code`, `dp:mock-up`, `dp:squint`, `dp:grill-me`, `dp:skill-feedback`, `dp:skill-review`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
 
 The plugin has no `version` on purpose, so every push to `main` counts as an update.
 
@@ -41,7 +42,7 @@ If a machine's admin settings block third-party marketplaces, fall back to symli
 
 ```bash
 gh repo clone MatthewDelprado/claude-skills ~/.claude/claude-skills
-for s in rename-session close-out whats-next bro show-me explain-code mock-up squint grill-me skill-feedback skill-review; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
+for s in rename-session close-out whats-next afk bro show-me explain-code mock-up squint grill-me skill-feedback skill-review; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
 ```
 
 ## Requirements

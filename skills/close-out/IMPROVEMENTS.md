@@ -20,3 +20,18 @@ Proposals from Step 6 runs. Each `## ` heading is one theme; add new evidence to
 
 - If the run is in a worktree on a branch that isn't the repo's working branch (or the session was started by another session), say so before the first question. Recommend running setup from the main or orchestrator session instead, or carrying on with a note that the config only reaches other sessions once this branch merges.
 - If setup goes ahead there, the closing report names the branch holding the config and tells the orchestrator (or parent session) to merge it, so no second setup runs in the meantime.
+
+## Proposed rule changes go to the user with only one view behind them
+
+**Seen:** 2026-11-21, in a personal repo. The ways-of-working reflection proposed a new `CLAUDE.md` rule: regenerate a generated file after every merge, since two merges had left it stale. The user asked for a council before deciding. Three subagents ran in parallel: one for the rule, one sceptic, one on placement. Two backed a reworded rule. The sceptic found that a test already names the fix and that both misses came from branches cut before the generator existed. That settled it: no rule. The user then asked for a council on every change close-out proposes, and it was added to that repo's `.claude/close-out.md`.
+
+**Proposal:** add to Step 6, after "Route each finding", and apply it to any extra step that proposes rules:
+
+> **Council before proposing.** Before putting a proposed change to the user (a Step 6 proposal, a config diff, a new rule for `CLAUDE.md` or a skill), run three subagents in parallel. Give each the exact wording, the evidence and the files to read, but not your own verdict:
+> - **For:** the strongest honest case for it.
+> - **Sceptic:** is it needed? Does a test, a failure message or an existing rule already cover it? Is the problem a one-off?
+> - **Placement:** who actually trips on it, and is this the right file, trigger and wording?
+>
+> Each replies in under 150 words with a verdict (add as is / reworded / elsewhere / don't add). Show the verdicts in a short table, say which argument decides it and why, and recommend. Then ask.
+
+Skip the council for a pure fact fix (a stale path or name), where there is nothing to weigh.

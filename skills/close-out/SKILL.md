@@ -96,7 +96,9 @@ Run `git status` and `git diff --stat` (read the stat: a few intended lines repo
   3. `git push origin --delete <branch>`.
   4. Local copy: `git rev-parse --verify refs/heads/<branch>` (an error means there's no local copy). If it equals `headRefOid` and the branch isn't checked out here or in another worktree (`git worktree list`), `git branch -D <branch>` (squash merges need `-D`). Otherwise leave it and say why.
 
-  Don't use `gh pr merge --delete-branch` for this: in a worktree it merges, fails switching to the default branch, and skips the deletion. List every branch deleted, and every one kept with its reason, in the report.
+  Don't use `gh pr merge --delete-branch` for this: in a worktree it merges, fails switching to the default branch, and skips the deletion. List every branch deleted, and every one kept with its reason, in the report:
+  - **Kept because the tip moved:** list what was added after the merge with `git log --oneline <headRefOid>..origin/<branch>` (or `..<branch>` for a local copy), so the user can see what's on it and decide.
+  - **Deleted:** note that the PR page's "Restore branch" button brings it back.
 
 Report what was committed, what was ignored, and what was deliberately left uncommitted and why.
 

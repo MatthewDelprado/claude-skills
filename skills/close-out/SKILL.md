@@ -30,7 +30,7 @@ Look for `.claude/close-out.md` in the current directory, then at the repo root 
 
 ## Externally visible writes may be denied
 
-Step 1's push, Step 5's issue create/comment/close, Step 7's landing and any Extra step that merges a PR are writes the harness's auto-mode classifier may deny, even when CLAUDE.md or this skill authorizes them; invoking close-out doesn't authorize a *specific* external mutation. When one is denied:
+Step 1's push and branch deletions, Step 5's issue create/comment/close, Step 7's landing and any Extra step that merges a PR are writes the harness's auto-mode classifier may deny, even when CLAUDE.md or this skill authorizes them; invoking close-out doesn't authorize a *specific* external mutation. When one is denied:
 
 - Don't work around it: no rephrased retry, alternate tool, or API call doing the same thing.
 - Put the exact content (comment text, issue title and body, commit range to push, merge decision with evidence) in the closing report for the user to approve or post.
@@ -90,6 +90,13 @@ Run `git status` and `git diff --stat` (read the stat: a few intended lines repo
   - Anything else → leave uncommitted and name it. Sweeping in half-done work and pushing it is worse than leaving a file dirty.
 - Run whatever config `## Git` adds.
 - Push per the config's policy (default: push the current branch if it has an upstream; never force-push). Expect to pull/rebase. Another writer may already have pushed this session's commits (`git log --oneline HEAD@{1}..HEAD` or `git status -sb`); if so, say that rather than reporting a push you didn't make. Work deliberately held unpushed belongs on a branch. If the session ran on a temporary worktree branch, say so in the report; work left only there is easy to strand.
+- **Merged branches.** Default, unless config `## Git` says `Keep merged branches`: delete each branch this session created whose PR is merged. Never one whose PR is open or closed unmerged, or one the session didn't create. One branch at a time:
+  1. `gh pr view <branch> --repo <owner>/<repo> --json state,headRefOid`. Go on only if `state` is `MERGED`; "no pull requests found" means keep it.
+  2. `git ls-remote origin refs/heads/<branch>`. Go on only if the tip equals `headRefOid`. A different tip means something was pushed after the merge, and deleting would lose it. No output means it's already gone; skip to the local copy.
+  3. `git push origin --delete <branch>`.
+  4. Local copy: `git rev-parse --verify refs/heads/<branch>` (an error means there's no local copy). If it equals `headRefOid` and the branch isn't checked out here or in another worktree (`git worktree list`), `git branch -D <branch>` (squash merges need `-D`). Otherwise leave it and say why.
+
+  Don't use `gh pr merge --delete-branch` for this: in a worktree it merges, fails switching to the default branch, and skips the deletion. List every branch deleted, and every one kept with its reason, in the report.
 
 Report what was committed, what was ignored, and what was deliberately left uncommitted and why.
 

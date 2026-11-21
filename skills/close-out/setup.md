@@ -44,6 +44,7 @@ Omit any section with nothing in it.
 
 ## Git
 - Branch and push policy
+- Keep merged branches   (opt-out; by default close-out deletes the branches this session created once their PRs are merged)
 - Hand-edited paths: `<globs>` — policy: commit separately | leave | ask   (opt-in; without this line, pre-existing changes are left and named in the report)
 - High-blast-radius paths: `<globs>` — policy: ask | commit | leave
 - Shared-tree notes (concurrent sessions, files other agents own)

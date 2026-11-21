@@ -34,7 +34,8 @@ Fill `template.html`'s `FINDINGS`, `ASKS` and header fields. Keep its structure;
 - **Off.** One card per finding: rule chips, a short title, the visible fact, what it costs, the fix, where it lives in code, and a before/after pair. Clicking either picture opens a modal with a drag-to-compare slider. Three buttons: **Fix it**, **Not now**, **It's on purpose**.
 - **Ask.** One card per question: why it's a question, two or three rendered options to pick, a "View larger" modal per option, and a free-text note.
 - **Try.** All the Off fixes together, as an inline drag-to-compare against the before.
-- **Working.** One specific strength, with a crop that shows it.
+- **Working.** One specific strength, with a crop that shows it. List its rule IDs in `WORKING_RULES`.
+- **Principles applied.** A card for each rule the review used, with the principle in one line and links to the Off, Ask and Working items that rest on it, then one line naming the rules walked with nothing to flag. It's built from the template's `RULES` list: add the repo's `.claude/squint.md` rules to it.
 - **Footer.** How it was made (what was injected, what was computed) and how to answer.
 
 Interactive detail opens in modals over the page (`<dialog>`), so the page stays readable as a sheet.
@@ -51,3 +52,4 @@ After publishing, `ArtifactData list picks` once: it should be empty. When the u
 - Moving a control in a fix may reflow a panel. Re-check that the clip still frames the same rows.
 - A label system that hides collisions makes "missing" content invisible. Check it in the DOM, not the picture.
 - Image `loading="lazy"` leaves full-page screenshots blank. The template doesn't use it.
+- Every `<img>` carries `width` and `height` (no layout jump) and CSS `height: auto`. Without `height: auto`, a CSS width plus the `height` attribute stretches the picture.

@@ -93,12 +93,12 @@ Run `git status` and `git diff --stat` (read the stat: a few intended lines repo
 - **Merged branches.** Default, unless config `## Git` says `Keep merged branches`: delete each branch this session created whose PR is merged. "Created" means the transcript shows this session making the branch (`git checkout -b`, `git switch -c`, a new worktree) or opening its PR. If that's unclear, for example after a context summary, keep it and list it. Never delete the default branch, a protected branch (GitHub refuses the delete; report it as kept), the current branch, a branch whose PR is open or closed unmerged, or one the session didn't create. Use the remote the branch was pushed to (`<remote>`, usually `origin`). One branch at a time:
   1. `gh pr list --repo <owner>/<repo> --head <branch> --state all --json number,state,headRefOid,isCrossRepository`. Go on only if there's exactly one PR, its `state` is `MERGED` and `isCrossRepository` is false. No PR, several PRs, or a fork PR means keep it.
   2. `git ls-remote <remote> refs/heads/<branch>`. Go on only if the tip equals `headRefOid`. A different tip means something was pushed after the merge, and deleting would lose it. No output means it's already gone; skip to the local copy.
-  3. `gh pr list --repo <owner>/<repo> --base <branch> --state open --json number`. Any result means another PR is stacked on this branch: keep it. Otherwise `git push <remote> --delete <branch>`.
+  3. `gh pr list --repo <owner>/<repo> --base <branch> --state all --json number`. Any result means other PRs build on this branch (a stacked PR, or a long-lived base like `develop`): keep it. Otherwise `git push <remote> --delete <branch>`.
   4. Local copy: `git rev-parse --verify refs/heads/<branch>` (an error means there's no local copy). If it equals `headRefOid` and the branch isn't checked out here or in another worktree (`git worktree list`), `git branch -D <branch>` (squash merges need `-D`). Otherwise leave it and say why.
 
   Don't use `gh pr merge --delete-branch` for this: in a worktree it merges, fails switching to the default branch, and skips the deletion. List every branch deleted, and every one kept with its reason, in the report:
-  - **Kept because the tip moved:** list what was added after the merge with `git log --oneline <headRefOid>..<remote>/<branch>` (or `..<branch>` for a local copy), so the user can see what's on it and decide.
-  - **Deleted:** note that the PR page's "Restore branch" button brings it back.
+  - **Kept because the tip moved:** `git fetch <remote> <branch>`, then list what was added after the merge with `git log --oneline <headRefOid>..<remote>/<branch>` (or `..<branch>` for a local copy), so the user can see what's on it and decide.
+  - **Deleted:** give its `headRefOid` and note that the PR page's "Restore branch" button brings it back (or `git push <remote> <headRefOid>:refs/heads/<branch>`).
 
   A PR that Step 7 or an Extra step merges later in the run gets the same check once it's merged.
 

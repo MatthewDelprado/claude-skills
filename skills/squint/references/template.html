@@ -45,7 +45,7 @@ button { font: inherit; color: inherit; }
 /* header */
 .head { display: grid; gap: 14px; }
 .wrap > *, .head > *, .working > *, .overview > * { min-width: 0; }
-img { max-width: 100%; }
+img { max-width: 100%; height: auto; }
 .meta span, .head h1 { min-width: 0; overflow-wrap: anywhere; }
 .eyebrow { font: 500 13px/1 var(--font-mono); color: var(--pencil); letter-spacing: .02em; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--ink-soft); font: 400 13px/1.4 var(--font-mono); }
@@ -136,7 +136,14 @@ img { max-width: 100%; }
 .slider input[type=range] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
 .slider-help { font-size: 13.5px; color: var(--ink-soft); }
 .working { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: center; padding: 26px; background: var(--ok-soft); border-radius: 14px; }
-.working img { width: 100%; border-radius: 8px; box-shadow: var(--shadow); }
+.working img { width: 100%; height: auto; border-radius: 8px; box-shadow: var(--shadow); }
+.principles .rule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 12px; }
+.rule-card { display: grid; gap: 6px; align-content: start; padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+.rule-card p { font-size: 14.5px; color: var(--ink-soft); }
+.rule-card .used { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; }
+.rule-card .used a { color: var(--pencil); text-decoration: none; font-weight: 600; }
+.rule-card .used a:hover { text-decoration: underline; }
+.also { font-size: 14px; color: var(--ink-soft); max-width: 78ch; }
 .how { color: var(--ink-soft); font-size: 14px; display: grid; gap: 8px; max-width: 78ch; border-top: 1px solid var(--line); padding-top: 18px; }
 
 /* modal */
@@ -166,7 +173,7 @@ dialog::backdrop { background: rgba(18, 21, 17, .62); }
 
 <div class="wrap">
 <!--
-  squint review page template. Copy, fill the {{...}} fields and the FINDINGS / ASKS data, publish with
+  squint review page template. Copy, fill the {{...}} fields, the FINDINGS / ASKS data and WORKING_RULES, publish with
   capabilities {db: {}} and the images under img/. See references/artifact.md for the contract.
 -->
   <header class="head">
@@ -260,6 +267,15 @@ dialog::backdrop { background: rgba(18, 21, 17, .62); }
     <img src="img/working.jpg" alt="{{What the crop shows.}}" width="720" height="720">
   </section>
 
+  <section class="sec principles" aria-labelledby="pr-h">
+    <div class="sec-head">
+      <h2 id="pr-h">Principles applied</h2>
+      <p>The squint rules this review rests on, and where each one shows up above.</p>
+    </div>
+    <div class="rule-grid" id="rule-grid"></div>
+    <p class="also" id="also"></p>
+  </section>
+
   <footer class="how">
     <p><b>How this was made.</b> squint opened the live app at desktop and phone sizes. Each "after" injects one fix into the running page ({{CSS, a DOM move, a patched module}}) and captures the same region. {{Contrast numbers are worked out from the CSS colour tokens / are estimates from pixels.}}</p>
     <p><b>Your picks save to this page.</b> Claude reads them back, so in the session you can say "apply the squint picks".</p>
@@ -285,6 +301,30 @@ const FINDINGS = [
     shots: [['f1-before', 'f1-after', 1600, 1000]], wide: true },
 ];
 /* Ask: at most three. Each option is rendered for real; an option without img is text-only. tall: true for phone shots. */
+const RULES = [  // id, name, the principle in one line. From references/rules.md plus the repo’s .claude/squint.md.
+  ['S1', 'One job', 'Name the screen’s job and main action in seconds; everything else serves it.'],
+  ['S2', 'Squint order', 'Blur your eyes: the loudest thing should be the most important thing.'],
+  ['S3', 'Type', 'One style per text role, few sizes, comfortable line length.'],
+  ['S4', 'Spacing', 'Gaps from a scale; tighter inside a group than between groups; space looks placed.'],
+  ['S5', 'Alignment', 'Edges share lines and repeated items line up. A near miss looks worse than a clear difference.'],
+  ['S6', 'Colour roles', 'Each colour does one job. The accent is kept for action and selection.'],
+  ['S7', 'Shape', 'Few corner radii; strokes and icons share a size and style.'],
+  ['S8', 'Depth', 'Separate with space, then tint, then border, and a shadow last.'],
+  ['S9', 'Optical fixes', 'Where the maths is right but it looks wrong, correct it by eye.'],
+  ['S10', 'Actions', 'One primary action per view, clear tiers below it; clickable looks clickable.'],
+  ['S11', 'States', 'Hover, focus, disabled, loading, empty and error are designed, not left to default.'],
+  ['S12', 'Copy', 'Buttons name the outcome; errors say what to do next.'],
+  ['S13', 'Real content', 'Holds up with long names, missing data and many items; truncation is designed.'],
+  ['S14', 'Flow', 'Count the steps to the goal; chrome doesn’t crowd out the content.'],
+  ['S15', 'Contrast', 'Text 4.5:1, large text 3:1, and icons and borders people need 3:1.'],
+  ['S16', 'Beyond colour', 'No state relies on colour alone; focus is visible.'],
+  ['S17', 'Size', 'Tap targets at least 24 px (44 pt iOS, 48 dp Android); body text around 16 px.'],
+  ['S18', 'Earn it', 'Remove before adding; every effect has a job.'],
+  ['S19', 'Generated-UI tells', 'Nothing over-emphasised, no nested cards, no decorative glows or emoji icons.'],
+  ['S20', 'Motion', 'Each animation explains a change, and it all still works with reduced motion.'],
+];
+const WORKING_RULES = ['S16'];  // {{rule IDs the Working note rests on}}
+
 const ASKS = [
   { id: 'a1', rule: 'S2 Squint order', extra: '', q: '{{The question}}',
     why: '{{Why it is a judgement call, not a rule break.}}',
@@ -416,7 +456,24 @@ $('#btn-squint').addEventListener('click', (e) => {
 });
 
 $('#n-off').textContent = FINDINGS.length; $('#n-ask').textContent = ASKS.length;
-renderFindings(); renderAsks(); paint();
+/* ---------- principles ---------- */
+function renderPrinciples() {
+  const used = {};   // 'S5' -> [[label, href]]
+  const add = (chip, label, href) => { if (!chip) return; const id = chip.split(' ')[0]; (used[id] ||= []).push([label, href]); };
+  FINDINGS.forEach((f, i) => { add(f.rule, 'Off ' + (i + 1), '#' + f.id); add(f.extra, 'Off ' + (i + 1), '#' + f.id); });
+  ASKS.forEach((a, i) => { add(a.rule, 'Ask ' + (i + 1), '#' + a.id); add(a.extra, 'Ask ' + (i + 1), '#' + a.id); });
+  WORKING_RULES.forEach((id) => add(id, 'Working', '#work-h'));
+  const grid = $('#rule-grid'), rest = [];
+  for (const [id, name, line] of RULES) {
+    if (!used[id]) { rest.push(id + ' ' + name); continue; }
+    const card = el('div', { class: 'rule-card' });
+    card.innerHTML = `<div><span class="chip">${id} ${name}</span></div><p>${line}</p><div class="used">${used[id].map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}</div>`;
+    grid.append(card);
+  }
+  $('#also').textContent = rest.length ? 'Also walked, nothing worth flagging: ' + rest.join(', ') + '.' : '';
+}
+
+renderFindings(); renderAsks(); renderPrinciples(); paint();
 
 /* ---------- shared store ---------- */
 (async () => {

@@ -41,3 +41,7 @@ For `question.html`, use the template's classes: `.opts` with `.opt` cards, `.op
 ### Finishing
 
 When no decision is `open` or `pending`, set `current` to `null`. The page then renders an agreed-design table of every ID, title and answer, plus `followups`. Say in chat that the tree is closed, and list the follow-ups.
+
+## Related skills
+
+- `council` has advocates argue competing options and returns a verdict. Use it when the user is stuck between options rather than refining one plan.

@@ -1,6 +1,6 @@
 ---
 name: council
-description: Spawn parallel sub-agents to argue distinct positions on a hard decision, then judge between them and return a verdict. Use when the user says "council this", "get a council on X", "have them argue it out", or is stuck between genuinely competing options and wants adversarial reasoning instead of a single pass of pros/cons.
+description: Spawn parallel sub-agents to argue distinct positions on a hard decision, then judge between them and return a verdict. Trigger on "council", "/council", "council this", "get a council on X", "have them argue it out", or when the user says they are stuck on a hard choice and asks for the options to be argued out. Not for a routine either/or question, a plan to stress-test (grill-me), or remaining work to step through (whats-next).
 ---
 
 ## Interface

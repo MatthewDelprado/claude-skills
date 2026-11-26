@@ -16,10 +16,11 @@ Personal Claude Code skills that work in any repo. No repo-specific paths or too
 | [`mock-up`](skills/mock-up/SKILL.md) | Builds a throwaway HTML preview of a UI idea in the current repo's own look and feel. Trigger: "mock this up", "what would this look like". |
 | [`squint`](skills/squint/SKILL.md) | Design-craft review of a UI: squints at a screenshot, page or running app, shows what's off with real-pixel crops and a rendered fix for each, renders the judgement calls as options to pick, and publishes it all as one review page. Each point is tagged with a rule ID. The rules start in `references/rules.md` and grow from your own calls; a repo can add its own in `.claude/squint.md`. Trigger: "squint", "give it a squint", "design crit". |
 | [`grill-me`](skills/grill-me/SKILL.md) | Interviews you about a plan one question at a time, with a live decision-tree page that keeps IDs stable. Trigger: "grill me". |
+| [`council`](skills/council/SKILL.md) | Settles a hard decision: subagents each argue one option blind, then it judges the briefs against what you actually care about and returns a verdict and what would flip it. Skips the council when one option clearly wins. Trigger: "council this", "get a council on X". |
 | [`skill-feedback`](skills/skill-feedback/SKILL.md) | Logs feedback on a skill as a GitHub issue on this repo. It drafts the issue and you confirm before anything is filed. |
 | [`skill-review`](skills/skill-review/SKILL.md) | Reads the open feedback issues for a skill and opens a PR with proposed edits. You review and merge. Trigger: `/skill-review <skill>`. |
 
-`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. `afk` hands its leftovers to `whats-next` once its decision walk is done. Each works alone, and `bro` and `show-me` stand alone. `explain-code` and `mock-up` name each other and `show-me`, and offer a one-line `skill-feedback` prompt when a skill gets it wrong; `skill-review` turns the accumulated issues into a PR. `squint` hands its suggested experiment to `mock-up` to render, and logs new rules through `skill-feedback`.
+`close-out`, `whats-next` and `rename-session` cooperate if all are installed: `close-out` and `whats-next` call `rename-session` at state changes, and `whats-next` hands off to `close-out`. `afk` hands its leftovers to `whats-next` once its decision walk is done. Each works alone, and `bro` and `show-me` stand alone. `grill-me` and `council` name each other: one refines a single plan, the other weighs competing options. `explain-code` and `mock-up` name each other and `show-me`, and offer a one-line `skill-feedback` prompt when a skill gets it wrong; `skill-review` turns the accumulated issues into a PR. `squint` hands its suggested experiment to `mock-up` to render, and logs new rules through `skill-feedback`.
 
 ## Install
 
@@ -30,7 +31,7 @@ As a plugin (recommended; works on any machine, updates itself):
 /plugin install dp@dp-skills
 ```
 
-Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:afk`, `dp:rename-session`, `dp:bro`, `dp:show-me`, `dp:explain-code`, `dp:mock-up`, `dp:squint`, `dp:grill-me`, `dp:skill-feedback`, `dp:skill-review`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
+Skills then appear namespaced, e.g. `dp:close-out`, `dp:whats-next`, `dp:afk`, `dp:rename-session`, `dp:bro`, `dp:show-me`, `dp:explain-code`, `dp:mock-up`, `dp:squint`, `dp:grill-me`, `dp:council`, `dp:skill-feedback`, `dp:skill-review`. Updates arrive when the Claude app launches, if auto-update is on for the marketplace (`/plugin` > Marketplaces > dp-skills). In the desktop app, starting a new session isn't enough: quit and reopen the app, or pull straight away with `claude plugin marketplace update dp-skills`.
 
 The plugin has no `version` on purpose, so every push to `main` counts as an update.
 
@@ -42,7 +43,7 @@ If a machine's admin settings block third-party marketplaces, fall back to symli
 
 ```bash
 gh repo clone MatthewDelprado/claude-skills ~/.claude/claude-skills
-for s in rename-session close-out whats-next afk bro show-me explain-code mock-up squint grill-me skill-feedback skill-review; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
+for s in rename-session close-out whats-next afk bro show-me explain-code mock-up squint grill-me council skill-feedback skill-review; do ln -s ~/.claude/claude-skills/skills/$s ~/.claude/skills/$s; done
 ```
 
 ## Requirements

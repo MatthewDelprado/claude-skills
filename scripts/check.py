@@ -5,7 +5,7 @@ import json, pathlib, re, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 MAX_SKILL_LINES = 100
 LONG_SKILLS = {"close-out", "whats-next"}  # predate the cap; detail has not been split out yet
-STANDALONE = {"grill-me", "bro"}  # skills that need no sibling mention
+STANDALONE = {"bro"}  # skills that need no sibling mention
 
 errors = []
 

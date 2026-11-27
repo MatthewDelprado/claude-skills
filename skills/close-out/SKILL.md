@@ -125,7 +125,7 @@ Report what was updated, deleted, and intentionally left.
 
 ## Step 3 — Documentation currency
 
-Check the docs in config `## Docs`. With no table, check whichever of `README`, `CONTEXT.md`, `ARCHITECTURE.md`, `docs/` and ADRs describe what changed. If the repo keeps ADRs and this session made a hard-to-reverse, surprising decision with a real trade-off, offer to write one. Fix only what drifted; don't rewrite.
+Check the docs in config `## Docs`. With no table, check whichever of `README`, `CONTEXT.md`, `ARCHITECTURE.md`, `docs/` and ADRs describe what changed. If the repo keeps ADRs and this session made a hard-to-reverse, surprising decision with a real trade-off, offer to write one (an offer that isn't an easy call goes through council first; see Step 6). Fix only what drifted; don't rewrite.
 
 ## Step 4 — Verification coverage and gates
 
@@ -135,7 +135,7 @@ For each new piece of infrastructure or behavior, ask: **would anything notice i
 - **Component added to a shared mechanism** (a check in a runner, a job in a dispatcher, a row in a registry): read its iteration path and see what it does with a component that is present but unusable (not executable, malformed, throwing). If it skips in silence, every addition is a possible silent no-op. Say in the report which mechanism you extended and what it does on a bad component.
 - **A claim that an entry was added** ("added Check N", "added row X"), yours or a prior session's, is unverified until the id or key is confirmed in the live file. Grep it; report a claimed addition that is missing.
 
-If the session fixed a bug, make sure verification exists: a test now, or an issue with explicit success criteria if it can't be verified yet. Propose a concrete addition only where a real failure would otherwise be silent; no speculative checks.
+If the session fixed a bug, make sure verification exists: a test now, or an issue with explicit success criteria if it can't be verified yet. Propose a concrete addition only where a real failure would otherwise be silent; no speculative checks. A proposed addition that isn't an easy call goes through council first (see "Council before recommending" in Step 6).
 
 Then run config `## Gates`, each when its **When** applies. **stop**: halt on failure, say what failed, continue only when resolved or the user overrides. **ask**: show the result and wait. **warn**: note it in the report and continue. With no gates, this step is the coverage question only.
 
@@ -174,6 +174,15 @@ Read this file and reflect: was there a category of cleanup no step covers, a st
 - **About this repo** (a gate to add, a doc to track) → propose a diff to `.claude/close-out.md`; apply it after the user approves.
 
 **Dedupe before writing.** Repetition in a proposals file means a theme was missed. Grep the file's `## ` headings (case-insensitive) for 2–3 keywords of your theme. 0 matches → write the proposal. 1–2 → append your evidence (date, what happened, commit SHA) to the existing entry. 3+ → stop proposing; file a GitHub issue with the recurrence count and links to every prior entry, and add one line to the existing entry pointing at it.
+
+**Council before recommending.** A recommendation drafted at the end of a long run is a first draft, and how to carry it out is often the hard part. Before you put one to the user, decide whether it's an easy call. That covers a Step 6 proposal, a verification addition from Step 4, an ADR offer, or a follow-up issue that prescribes a fix. It's easy when there is one obvious way to do it, it's small, and it's cheap to undo: a missing table row, a stale line, adding evidence to an existing entry. Anything else (a new step or gate, a change to how something works, a choice between approaches, or doing it at all versus leaving it) goes through the `council` skill first, if it's installed:
+
+- Frame it as `DECISION="how best to <recommendation>, or whether to"`. Include the evidence from this session and the why: what went wrong or nearly did. Let council derive the positions, and keep "leave it as is" in play.
+- Run independent councils in parallel. Several recommendations on one theme get one council between them.
+- Bring the verdict to the user, not your draft. When the verdict differs from what you would have proposed, say so in one line ("drafted X; council recommends Y because …"), so the user can see what changed and why.
+- In a file write or issue, record the recommended approach and what would flip it. Leave the advocate briefs out.
+
+If `council` isn't installed, surface the recommendation as drafted and say that it wasn't put through a council.
 
 ## Step 7 — Land what close-out changed
 

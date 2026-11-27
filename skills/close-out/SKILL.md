@@ -125,7 +125,7 @@ Report what was updated, deleted, and intentionally left.
 
 ## Step 3 — Documentation currency
 
-Check the docs in config `## Docs`. With no table, check whichever of `README`, `CONTEXT.md`, `ARCHITECTURE.md`, `docs/` and ADRs describe what changed. If the repo keeps ADRs and this session made a hard-to-reverse, surprising decision with a real trade-off, offer to write one. Fix only what drifted; don't rewrite.
+Check the docs in config `## Docs`. With no table, check whichever of `README`, `CONTEXT.md`, `ARCHITECTURE.md`, `docs/` and ADRs describe what changed. If the repo keeps ADRs and this session made a hard-to-reverse, surprising decision with a real trade-off, offer to write one (an offer that isn't an easy call goes through council first; see Step 6). Fix only what drifted; don't rewrite.
 
 ## Step 4 — Verification coverage and gates
 
@@ -135,7 +135,7 @@ For each new piece of infrastructure or behavior, ask: **would anything notice i
 - **Component added to a shared mechanism** (a check in a runner, a job in a dispatcher, a row in a registry): read its iteration path and see what it does with a component that is present but unusable (not executable, malformed, throwing). If it skips in silence, every addition is a possible silent no-op. Say in the report which mechanism you extended and what it does on a bad component.
 - **A claim that an entry was added** ("added Check N", "added row X"), yours or a prior session's, is unverified until the id or key is confirmed in the live file. Grep it; report a claimed addition that is missing.
 
-If the session fixed a bug, make sure verification exists: a test now, or an issue with explicit success criteria if it can't be verified yet. Propose a concrete addition only where a real failure would otherwise be silent; no speculative checks.
+If the session fixed a bug, make sure verification exists: a test now, or an issue with explicit success criteria if it can't be verified yet. Propose a concrete addition only where a real failure would otherwise be silent; no speculative checks. A proposed addition that isn't an easy call goes through council first (see "Council before recommending" in Step 6).
 
 Then run config `## Gates`, each when its **When** applies. **stop**: halt on failure, say what failed, continue only when resolved or the user overrides. **ask**: show the result and wait. **warn**: note it in the report and continue. With no gates, this step is the coverage question only.
 

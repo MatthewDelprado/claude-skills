@@ -175,6 +175,15 @@ Read this file and reflect: was there a category of cleanup no step covers, a st
 
 **Dedupe before writing.** Repetition in a proposals file means a theme was missed. Grep the file's `## ` headings (case-insensitive) for 2–3 keywords of your theme. 0 matches → write the proposal. 1–2 → append your evidence (date, what happened, commit SHA) to the existing entry. 3+ → stop proposing; file a GitHub issue with the recurrence count and links to every prior entry, and add one line to the existing entry pointing at it.
 
+**Council before recommending.** A recommendation drafted at the end of a long run is a first draft, and how to carry it out is often the hard part. Before you put one to the user, decide whether it's an easy call. That covers a Step 6 proposal, a verification addition from Step 4, an ADR offer, or a follow-up issue that prescribes a fix. It's easy when there is one obvious way to do it, it's small, and it's cheap to undo: a missing table row, a stale line, adding evidence to an existing entry. Anything else (a new step or gate, a change to how something works, a choice between approaches, or doing it at all versus leaving it) goes through the `council` skill first, if it's installed:
+
+- Frame it as `DECISION="how best to <recommendation>, or whether to"`. Include the evidence from this session and the why: what went wrong or nearly did. Let council derive the positions, and keep "leave it as is" in play.
+- Run independent councils in parallel. Several recommendations on one theme get one council between them.
+- Bring the verdict to the user, not your draft. When the verdict differs from what you would have proposed, say so in one line ("drafted X; council recommends Y because …"), so the user can see what changed and why.
+- In a file write or issue, record the recommended approach and what would flip it. Leave the advocate briefs out.
+
+If `council` isn't installed, surface the recommendation as drafted and say that it wasn't put through a council.
+
 ## Step 7 — Land what close-out changed
 
 Steps 2–6 edit things after Step 1's commit (doc fixes, config, the run log). Land them so the session doesn't end on a dirty tree:
